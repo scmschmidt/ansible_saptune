@@ -1,2 +1,2 @@
 # ansible_saptune
-Ansible modul for saptune
+Ansible module for saptune

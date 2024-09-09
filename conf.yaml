@@ -1,0 +1,55 @@
+
+# List of Notes and Solution which will be applied
+# in this order. No optimization is done to remove
+# unneccessary applies or reverts. 
+# Only one Solution is allowed and must start with '@'.
+# Notes can be prefixed by `-` to revert it.
+apply:
+  # - '@HANA' 
+  # - '-1980196'
+  # - 'SAP_BOBJ'
+  # - '@MAXDB'
+  # - '-941735'
+  # - '-1771258'
+  # - '-2578899'
+
+# Normally the module will do nothing if the tuning is
+# already in the configured state. With `force_reapply`
+# this behaviour can be altered.
+# default: false
+force_reapply: false
+
+# Defines if 'tuned.service' should be stopped and disabled.
+# default: true
+no_tuned: true 
+
+# Defines if 'sapconf.service' should be stopped and disabled.
+# default: true 
+no_sapconf: true 
+
+# Define if 'spatune.service' shall be started and
+# enabled.'
+# `sapconf` conflicts with `saptune`, so put it out
+# of the way by yourself or set `no_sapconf` to true.
+# default: true
+enabled: true
+started: true
+
+# Defines if the tuning shall remain active even if
+# `saptune.service` was set to be stopped.
+# default: false
+keep_applied_if_stopped: false
+
+# A non-compliant tuning will result in an error.
+# If this is not wanted, set this parameter to true.
+# default: false
+ignore_non_compliant: false
+
+# A degraded systemd system state will result in
+# an error. If this is not wanted, set this parameter to true.
+# default: false
+ignore_degraded: true
+
+# Defines state of staging.
+# default: false
+staging_enabled: false

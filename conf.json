@@ -1,0 +1,15 @@
+{
+  "ANSIBLE_MODULE_ARGS": {
+    "apply": [],
+    "force_reapply": "no",
+    "no_tuned": true,
+    "no_sapconf": true, 
+    "enabled": true,
+    "started": true,
+    "keep_applied_if_stopped": false,
+    "ignore_non_compliant": false,
+    "ignore_degraded": true,
+    "staging_enabled": false
+  }
+}
+

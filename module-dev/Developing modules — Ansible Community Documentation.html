@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developing modules — Ansible Community Documentation</title>
+      <link rel="stylesheet" type="text/css" href="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/pygments.css">
+      <link rel="stylesheet" type="text/css" href="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/ansible.css">
+      <link rel="stylesheet" type="text/css" href="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/antsibull-minimal.css">
+      <link rel="stylesheet" type="text/css" href="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/copybutton.css">
+      <link rel="stylesheet" type="text/css" href="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/rtd-ethical-ads.css">
+
+  
+    <link rel="shortcut icon" href="https://docs.ansible.com/ansible/latest/_static/images/Ansible-Mark-RGB_Black.png">
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_general.html">
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/banner.js" type="text/javascript" id="cookieBanner-330046" data-cookieconsent="ignore" data-hs-ignore="true" data-loader="hs-scriptloader" data-hsjs-portal="330046" data-hsjs-env="prod" data-hsjs-hublet="na1"></script><script type="text/javascript" async="" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/js_002"></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/330046.js" type="text/javascript" id="hs-script-loader"></script><script type="text/javascript" async="" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/js"></script><script type="text/javascript" async="" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/analytics.js"></script><script id="hs-analytics" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/330046_002.js"></script><script async="" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/gtm.js"></script><script async="" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/st.js"></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/jquery.js"></script>
+        <script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/documentation_options.js"></script>
+        <script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/doctools.js"></script>
+        <script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/sphinx_highlight.js"></script>
+        <script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/clipboard.min.js"></script>
+        <script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/copybutton.js"></script>
+    <script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/theme.js"></script>
+    <link rel="index" title="Index" href="https://docs.ansible.com/ansible/latest/genindex.html">
+    <link rel="search" title="Search" href="https://docs.ansible.com/ansible/latest/search.html">
+    <link rel="next" title="Contributing your module to an existing Ansible collection" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_checklist.html">
+    <link rel="prev" title="Should you develop a module?" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules.html"><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+<script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/dtm.js"></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/AppMeasurement.min.js" async=""></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/AppMeasurement_Module_ActivityMap.min.js" async=""></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/rh.mktg.js"></script>
+
+
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="10">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+
+
+<script>
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','https://s.swiftypecdn.com/install/v2/st.js','_st');
+
+_st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+<script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC64c4139883b6449e9007dae118d46129-source.min.js" async=""></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RCb3347083d3c74782ad8b87082d840d03-source.min.js" async=""></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RCaeae9fdd3ba243ddb2ee3b09b79202c7-source.min.js" async=""></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC9bdf9a2dcb6841e1b69b64c7654c3182-source.min.js" async=""></script><link rel="stylesheet" type="text/css" href="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/new_embed-2552d8d62d9c60f59b3b11a5d083d1ebd090c72de809fc7c76.css"><style type="text/css">.st-install-yABGvz2N8PwcwBxyfzUc .st-ui-result .st-ui-type-heading { color:#5bbdbf !important }
+.st-install-yABGvz2N8PwcwBxyfzUc .st-ui-result em {font-style:normal; font-weight:bold; background-color:#f6fcfe !important}</style><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC998e066cced84f7bab0826f50900712c-source.min.js" async=""></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC8fd79e9f4e5942d7b94e766cb5eb9256-source.min.js" async=""></script><script type="text/javascript" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/elqCfg.min.js"></script><script src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC0548ca5c51b34db08240b0dce9707f2f-source.min.js" async=""></script><script type="text/javascript" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/js_003"></script><script type="text/javascript" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/svrGP"></script></head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+<!-- Google Tag Manager -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+    <li><a href="https://forum.ansible.com/" target="_blank">Ansible community forum</a></li>
+    <li><a href="https://docs.ansible.com/" target="_blank">Documentation</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="https://docs.ansible.com/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/Ansible-Mark-RGB_White.png" alt="Ansible Logo">
+  <div class="DocSiteNav-title">Ansible Community Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+          
+          
+          <a href="https://docs.ansible.com/ansible/latest/index.html" class="icon icon-home">
+            Ansible
+          </a>
+              <div class="version">
+                10
+              </div><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <form class="version-dropdown" method="get">
+      <script>
+        function switchVersionTo(slug) {
+          var current_url_path = window.location.pathname;
+          var url_version = current_url_path.search("/10/") > -1
+            ? "/10/"
+            : "/latest/";
+          var new_version_url = current_url_path.replace(url_version, "/" + slug + "/");
+          window.location.replace(new_version_url);
+        }
+      </script>
+      <label class="sr-only" for="version-list">Select version:</label>
+      <select class="version-list" id="version-list" onchange="switchVersionTo(this.value);">
+        
+        <option value="latest" selected="selected">
+            latest
+        </option>
+        
+        <option value="9">
+            9
+        </option>
+        
+        <option value="2.9">
+            2.9
+        </option>
+        
+        <option value="devel">
+            devel
+        </option>
+        
+      </select>
+    </form>
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" autocomplete="off" autocorrect="off" autocapitalize="none">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <p class="caption" role="heading"><span class="caption-text">Ansible getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/getting_started/index.html">Getting started with Ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/getting_started_ee/index.html">Getting started with Execution Environments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/inventory_guide/index.html">Building Ansible inventories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/command_guide/index.html">Using Ansible command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/playbook_guide/index.html">Using Ansible playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/vault_guide/index.html">Protecting sensitive data with Ansible vault</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/module_plugin_guide/index.html">Using Ansible modules and plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections_guide/index.html">Using Ansible collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/os_guide/index.html">Using Ansible on Windows and BSD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/tips_tricks/index.html">Ansible tips and tricks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing to Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/index.html">Ansible Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/contributions_collections.html">Ansible Collections Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/contributions.html">ansible-core Contributors Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/advanced_index.html">Advanced Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/style_guide/index.html">Ansible documentation style guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/scenario_guides/cloud_guides.html">Legacy Public Cloud Guides</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/network/getting_started/index.html">Network Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/network/user_guide/index.html">Network Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/network/dev_guide/index.html">Network Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/index.html">Collection Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/all_plugins.html">Indexes of all modules and plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html">Releases and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/tower.html">Red Hat Ansible Automation Platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/roadmap/ansible_roadmap_index.html">Ansible Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/roadmap/ansible_core_roadmap_index.html">ansible-core Roadmaps</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/ASB-docs-left-rail.webp">
+  </a>
+  <br><br><br>
+</div>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="https://docs.ansible.com/ansible/latest/index.html">Ansible</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="https://docs.ansible.com/ansible/latest/index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="https://docs.ansible.com/ansible/latest/dev_guide/index.html">Developer Guide</a></li>
+      <li class="breadcrumb-item active">Developing modules</li>
+  <li class="wy-breadcrumbs-aside">
+            <!-- Remove main index page as it is no longer editable -->
+            
+              <a href="https://github.com/ansible/ansible-documentation/edit/devel/docs/docsite/rst/dev_guide/developing_modules_general.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+            
+  </li>
+  </ul>
+  <hr>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script>
+    function startsWith(str, needle) {
+      return str.slice(0, needle.length) == needle
+    }
+    function startsWithOneOf(str, needles) {
+      return needles.some(function (needle) {
+        return startsWith(str, needle);
+      });
+    }
+    var banner = '';
+      var extra_banner = '';
+    /*use extra_banner for when we want something extra, like a survey or Community Day notice */
+   /*  var extra_banner =
+      '<div id="latest_extra_banner_id" class="admonition important">' +
+        '<p style="padding-bottom: 1.2rem;">' +
+        'Discuss Ansible in the new <a href="https://forum.ansible.com/t/welcome-to-the-ansible-community/5">Ansible Forum!</a>' +
+        '</p>' +
+      '</div>';
+      */
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">' +
+                     '<p>This is the testing site for Ansible Documentation. Unless you are reviewing pre-production changes, please visit the <a href="https://docs.ansible.com/ansible/latest/">official documentation website</a>.</p> <p></p>' +
+                     '</div>');
+    }
+    
+      // Create a banner
+      current_url_path = window.location.pathname;
+
+      var important = false;
+      var msg = '<p>';
+      if (startsWith(current_url_path, "/ansible-core/")) {
+        msg += 'You are reading documentation for Ansible Core, which contains no plugins except for those in ansible.builtin. For documentation of the Ansible package, go to <a href="/ansible/latest">the latest documentation</a>.';
+      } else if (startsWithOneOf(current_url_path, ["/ansible/latest/", "/ansible/10/"])) {
+        /* temp extra banner to advertise something */
+        banner += extra_banner;
+
+        msg += 'This is the <b>latest</b> (stable) Ansible community documentation. For Red Hat Ansible Automation Platform subscriptions, see <a href="https://access.redhat.com/support/policy/updates/ansible-automation-platform">Life Cycle</a> for version details.';
+      } else if (startsWith(current_url_path, "/ansible/2.9/")) {
+        msg += 'You are reading the latest Red Hat released version of the Ansible documentation. Community users can use this version, or select <b>latest</b> from the version selector to the left for the most recent community version.';
+      } else if (startsWith(current_url_path, "/ansible/devel/")) {
+        /* temp extra banner to advertise something */
+        banner += extra_banner;
+
+        msg += 'You are reading the <b>devel</b> version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the <b>latest</b> (stable) released version.';
+      } else {
+        msg += 'You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the <b>latest</b> (stable) released version.';
+        /* temp extra banner to advertise something - this is for testing*/
+        banner += extra_banner;
+
+      }
+      msg += '</p>';
+
+      banner += '<div id="banner_id" class="admonition ';
+      banner += important ? 'important' : 'caution';
+      banner += '">';
+      banner += important ? '<br>' : '';
+      banner += msg;
+      banner += important ? '<br>' : '';
+      banner += '</div>';
+      document.write(banner);
+    
+  </script><div id="banner_id" class="admonition caution"><p>This is the <b>latest</b> (stable) Ansible community documentation. For Red Hat Ansible Automation Platform subscriptions, see <a href="https://access.redhat.com/support/policy/updates/ansible-automation-platform">Life Cycle</a> for version details.</p></div>
+
+
+  
+           <div itemprop="articleBody">
+             
+  <section id="developing-modules">
+<span id="module-dev-tutorial-sample"></span><span id="developing-modules-general"></span><h1>Developing modules<a class="headerlink" href="#developing-modules" title="Link to this heading"></a></h1>
+<p>A module is a reusable, standalone script that Ansible runs on your 
+behalf, either locally or remotely. Modules interact with your local 
+machine, an API, or a remote system to perform specific tasks like 
+changing a database password or spinning up a cloud instance. Each 
+module can be used by the Ansible API, or by the <strong class="command">ansible</strong> or <strong class="command">ansible-playbook</strong>
+ programs. A module provides a defined interface, accepts arguments, and
+ returns information to Ansible by printing a JSON string to stdout 
+before exiting.</p>
+<p>If you need functionality that is not available in any of the 
+thousands of Ansible modules found in collections, you can easily write 
+your own custom module. When you write a module for local use, you can 
+choose any programming language and follow your own rules. Use this 
+topic to learn how to create an Ansible module in Python. After you 
+create a module, you must add it locally to the appropriate directory so
+ that Ansible can find and execute it. For details about adding a module
+ locally, see <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_locally.html#developing-locally"><span class="std std-ref">Adding modules and plugins locally</span></a>.</p>
+<p>If you are developing a module in a <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_collections.html#developing-collections"><span class="std std-ref">collection</span></a>,  see those documents instead.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#preparing-an-environment-for-developing-ansible-modules" id="id1">Preparing an environment for developing Ansible modules</a></p></li>
+<li><p><a class="reference internal" href="#creating-a-module" id="id2">Creating a module</a></p></li>
+<li><p><a class="reference internal" href="#creating-an-info-or-a-facts-module" id="id3">Creating an info or a facts module</a></p></li>
+<li><p><a class="reference internal" href="#verifying-your-module-code" id="id4">Verifying your module code</a></p>
+<ul>
+<li><p><a class="reference internal" href="#verifying-your-module-code-locally" id="id5">Verifying your module code locally</a></p></li>
+<li><p><a class="reference internal" href="#verifying-your-module-code-in-a-playbook" id="id6">Verifying your module code in a playbook</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#testing-your-newly-created-module" id="id7">Testing your newly-created module</a></p>
+<ul>
+<li><p><a class="reference internal" href="#performing-sanity-tests" id="id8">Performing sanity tests</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#contributing-back-to-ansible" id="id9">Contributing back to Ansible</a></p></li>
+<li><p><a class="reference internal" href="#communication-and-development-support" id="id10">Communication and development support</a></p></li>
+<li><p><a class="reference internal" href="#credit" id="id11">Credit</a></p></li>
+</ul>
+</nav>
+<section id="preparing-an-environment-for-developing-ansible-modules">
+<span id="environment-setup"></span><h2><a class="toc-backref" href="#id1" role="doc-backlink">Preparing an environment for developing Ansible modules</a><a class="headerlink" href="#preparing-an-environment-for-developing-ansible-modules" title="Link to this heading"></a></h2>
+<p>You just need <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code> installed to test the module. Modules can be written in any language,
+but most of the following guide is assuming you are using Python.
+Modules for inclusion in Ansible itself must be Python or Powershell.</p>
+<p>One advantage of using Python or Powershell for your custom modules is being able to use the <code class="docutils literal notranslate"><span class="pre">module_utils</span></code> common code that does a lot of the
+heavy lifting for argument processing, logging and response writing, among other things.</p>
+</section>
+<section id="creating-a-module">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Creating a module</a><a class="headerlink" href="#creating-a-module" title="Link to this heading"></a></h2>
+<p>It is highly recommended that you use a <code class="docutils literal notranslate"><span class="pre">venv</span></code> or <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code> for Python development.</p>
+<p>To create a module:</p>
+<ol class="arabic simple">
+<li><p>Create a <code class="docutils literal notranslate"><span class="pre">library</span></code> directory in your workspace, your test play should live in the same directory.</p></li>
+<li><p>Create your new module file: <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">touch</span> <span class="pre">library/my_test.py</span></code>. Or just open/create it with your editor of choice.</p></li>
+<li><p>Paste the content below into your new module file. It includes the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_documenting.html#developing-modules-documenting"><span class="std std-ref">required Ansible format and documentation</span></a>, a simple <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_program_flow_modules.html#argument-spec"><span class="std std-ref">argument spec for declaring the module options</span></a>, and some example code.</p></li>
+<li><p>Modify and extend the code to do what you want your new module to do. See the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_best_practices.html#developing-modules-best-practices"><span class="std std-ref">programming tips</span></a> and <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_python_3.html#developing-python-3"><span class="std std-ref">Python 3 compatibility</span></a> pages for pointers on writing clean and concise module code.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre id="codecell0"><span></span><span class="ch">#!/usr/bin/python</span>
+
+<span class="c1"># Copyright: (c) 2018, Terry Jones &lt;terry.jones@example.org&gt;</span>
+<span class="c1"># GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">)</span>
+<span class="n">__metaclass__</span> <span class="o">=</span> <span class="nb">type</span>
+
+<span class="n">DOCUMENTATION</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'''</span>
+<span class="s1">---</span>
+<span class="s1">module: my_test</span>
+
+<span class="s1">short_description: This is my test module</span>
+
+<span class="s1"># If this is part of a collection, you need to use semantic versioning,</span>
+<span class="s1"># i.e. the version is of the form "2.5.0" and not "2.4".</span>
+<span class="s1">version_added: "1.0.0"</span>
+
+<span class="s1">description: This is my longer description explaining my test module.</span>
+
+<span class="s1">options:</span>
+<span class="s1">    name:</span>
+<span class="s1">        description: This is the message to send to the test module.</span>
+<span class="s1">        required: true</span>
+<span class="s1">        type: str</span>
+<span class="s1">    new:</span>
+<span class="s1">        description:</span>
+<span class="s1">            - Control to demo if the result of this module is changed or not.</span>
+<span class="s1">            - Parameter description can be a list as well.</span>
+<span class="s1">        required: false</span>
+<span class="s1">        type: bool</span>
+<span class="s1"># Specify this value according to your collection</span>
+<span class="s1"># in format of namespace.collection.doc_fragment_name</span>
+<span class="s1"># extends_documentation_fragment:</span>
+<span class="s1">#     - my_namespace.my_collection.my_doc_fragment_name</span>
+
+<span class="s1">author:</span>
+<span class="s1">    - Your Name (@yourGitHubHandle)</span>
+<span class="s1">'''</span>
+
+<span class="n">EXAMPLES</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'''</span>
+<span class="s1"># Pass in a message</span>
+<span class="s1">- name: Test with a message</span>
+<span class="s1">  my_namespace.my_collection.my_test:</span>
+<span class="s1">    name: hello world</span>
+
+<span class="s1"># pass in a message and have changed true</span>
+<span class="s1">- name: Test with a message and changed output</span>
+<span class="s1">  my_namespace.my_collection.my_test:</span>
+<span class="s1">    name: hello world</span>
+<span class="s1">    new: true</span>
+
+<span class="s1"># fail the module</span>
+<span class="s1">- name: Test failure of the module</span>
+<span class="s1">  my_namespace.my_collection.my_test:</span>
+<span class="s1">    name: fail me</span>
+<span class="s1">'''</span>
+
+<span class="n">RETURN</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'''</span>
+<span class="s1"># These are examples of possible return values, and in general should use other names for return values.</span>
+<span class="s1">original_message:</span>
+<span class="s1">    description: The original name param that was passed in.</span>
+<span class="s1">    type: str</span>
+<span class="s1">    returned: always</span>
+<span class="s1">    sample: 'hello world'</span>
+<span class="s1">message:</span>
+<span class="s1">    description: The output message that the test module generates.</span>
+<span class="s1">    type: str</span>
+<span class="s1">    returned: always</span>
+<span class="s1">    sample: 'goodbye'</span>
+<span class="s1">'''</span>
+
+<span class="kn">from</span> <span class="nn">ansible.module_utils.basic</span> <span class="kn">import</span> <span class="n">AnsibleModule</span>
+
+
+<span class="k">def</span> <span class="nf">run_module</span><span class="p">():</span>
+    <span class="c1"># define available arguments/parameters a user can pass to the module</span>
+    <span class="n">module_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">'str'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">new</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">'bool'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># seed the result dict in the object</span>
+    <span class="c1"># we primarily care about changed and state</span>
+    <span class="c1"># changed is if this module effectively modified the target</span>
+    <span class="c1"># state will include any data that you want your module to pass back</span>
+    <span class="c1"># for consumption, for example, in a subsequent task</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">changed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">original_message</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="s1">''</span>
+    <span class="p">)</span>
+
+    <span class="c1"># the AnsibleModule object will be our abstraction working with Ansible</span>
+    <span class="c1"># this includes instantiation, a couple of common attr would be the</span>
+    <span class="c1"># args/params passed to the execution, as well as if the module</span>
+    <span class="c1"># supports check mode</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">AnsibleModule</span><span class="p">(</span>
+        <span class="n">argument_spec</span><span class="o">=</span><span class="n">module_args</span><span class="p">,</span>
+        <span class="n">supports_check_mode</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="c1"># if the user is working with this module in only check mode we do not</span>
+    <span class="c1"># want to make any changes to the environment, just return the current</span>
+    <span class="c1"># state with no modifications</span>
+    <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">check_mode</span><span class="p">:</span>
+        <span class="n">module</span><span class="o">.</span><span class="n">exit_json</span><span class="p">(</span><span class="o">**</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># manipulate or modify the state as needed (this is going to be the</span>
+    <span class="c1"># part where your module will do what it needs to do)</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">'original_message'</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">'message'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'goodbye'</span>
+
+    <span class="c1"># use whatever logic you need to determine whether or not this module</span>
+    <span class="c1"># made any modifications to your target</span>
+    <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">'new'</span><span class="p">]:</span>
+        <span class="n">result</span><span class="p">[</span><span class="s1">'changed'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># during the execution of the module, if there is an exception or a</span>
+    <span class="c1"># conditional state that effectively causes a failure, run</span>
+    <span class="c1"># AnsibleModule.fail_json() to pass in the message and the result</span>
+    <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'fail me'</span><span class="p">:</span>
+        <span class="n">module</span><span class="o">.</span><span class="n">fail_json</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">'You requested this to fail'</span><span class="p">,</span> <span class="o">**</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># in the event of a successful module execution, you will want to</span>
+    <span class="c1"># simple AnsibleModule.exit_json(), passing the key/value results</span>
+    <span class="n">module</span><span class="o">.</span><span class="n">exit_json</span><span class="p">(</span><span class="o">**</span><span class="n">result</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">run_module</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+</section>
+<section id="creating-an-info-or-a-facts-module">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Creating an info or a facts module</a><a class="headerlink" href="#creating-an-info-or-a-facts-module" title="Link to this heading"></a></h2>
+<p>Ansible gathers information about the target machines using facts 
+modules, and gathers information on other objects or files using info 
+modules.
+If you find yourself trying to add <code class="docutils literal notranslate"><span class="pre">state:</span> <span class="pre">info</span></code> or <code class="docutils literal notranslate"><span class="pre">state:</span> <span class="pre">list</span></code> to an existing module, that is often a sign that a new dedicated <code class="docutils literal notranslate"><span class="pre">_facts</span></code> or <code class="docutils literal notranslate"><span class="pre">_info</span></code> module is needed.</p>
+<p>In Ansible 2.8 and onwards, we have two type of information modules, they are <code class="docutils literal notranslate"><span class="pre">*_info</span></code> and <code class="docutils literal notranslate"><span class="pre">*_facts</span></code>.</p>
+<p>If a module is named <code class="docutils literal notranslate"><span class="pre">&lt;something&gt;_facts</span></code>, it should be because its main purpose is returning <code class="docutils literal notranslate"><span class="pre">ansible_facts</span></code>. Do not name modules that do not do this with <code class="docutils literal notranslate"><span class="pre">_facts</span></code>.
+Only use <code class="docutils literal notranslate"><span class="pre">ansible_facts</span></code>
+ for information that is specific to the host machine, for example 
+network interfaces and their configuration, which operating system and 
+which programs are installed.</p>
+<p>Modules that query/return general information (and not <code class="docutils literal notranslate"><span class="pre">ansible_facts</span></code>) should be named <code class="docutils literal notranslate"><span class="pre">_info</span></code>.
+General information is non-host specific information, for example 
+information on online/cloud services (you can access different accounts 
+for the same online service from the same host), or information on VMs 
+and containers accessible from the machine, or information on individual
+ files or programs.</p>
+<p>Info and facts modules, are just like any other Ansible Module, with a few minor requirements:</p>
+<ol class="arabic simple">
+<li><p>They MUST be named <code class="docutils literal notranslate"><span class="pre">&lt;something&gt;_info</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;something&gt;_facts</span></code>, where &lt;something&gt; is singular.</p></li>
+<li><p>Info <code class="docutils literal notranslate"><span class="pre">*_info</span></code> modules MUST return in the form of the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values"><span class="std std-ref">result dictionary</span></a> so other modules can access them.</p></li>
+<li><p>Fact <code class="docutils literal notranslate"><span class="pre">*_facts</span></code> modules MUST return in the <code class="docutils literal notranslate"><span class="pre">ansible_facts</span></code> field of the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values"><span class="std std-ref">result dictionary</span></a> so other modules can access them.</p></li>
+<li><p>They MUST support <a class="reference internal" href="https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_checkmode.html#check-mode-dry"><span class="std std-ref">check_mode</span></a>.</p></li>
+<li><p>They MUST NOT make any changes to the system.</p></li>
+<li><p>They MUST document the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_documenting.html#return-block"><span class="std std-ref">return fields</span></a> and <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_documenting.html#examples-block"><span class="std std-ref">examples</span></a>.</p></li>
+</ol>
+<p>The rest is just like creating a normal module.</p>
+</section>
+<section id="verifying-your-module-code">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Verifying your module code</a><a class="headerlink" href="#verifying-your-module-code" title="Link to this heading"></a></h2>
+<p>After you modify the sample code above to do what you want, you can try out your module.
+Our <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/debugging.html#debugging-modules"><span class="std std-ref">debugging tips</span></a> will help if you run into bugs as you verify your module code.</p>
+<section id="verifying-your-module-code-locally">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Verifying your module code locally</a><a class="headerlink" href="#verifying-your-module-code-locally" title="Link to this heading"></a></h3>
+<p>The simplest way is to use <code class="docutils literal notranslate"><span class="pre">ansible</span></code> adhoc command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre id="codecell1"><span></span><span class="nv">ANSIBLE_LIBRARY</span><span class="o">=</span>./library<span class="w"> </span>ansible<span class="w"> </span>-m<span class="w"> </span>my_test<span class="w"> </span>-a<span class="w"> </span><span class="s1">'name=hello new=true'</span><span class="w"> </span>remotehost
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p>If your module does not need to target a remote host, you can quickly and easily exercise your code locally like this:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre id="codecell2"><span></span><span class="nv">ANSIBLE_LIBRARY</span><span class="o">=</span>./library<span class="w"> </span>ansible<span class="w"> </span>-m<span class="w"> </span>my_test<span class="w"> </span>-a<span class="w"> </span><span class="s1">'name=hello new=true'</span><span class="w"> </span>localhost
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<ul class="simple">
+<li><p>If for any reason (pdb, using print(), faster iteration, etc) you
+ want to avoid going through Ansible,
+another way is to create an arguments file, a basic JSON config file 
+that passes parameters to your module so that you can run it.
+Name the arguments file <code class="docutils literal notranslate"><span class="pre">/tmp/args.json</span></code> and add the following content:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre id="codecell3"><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"ANSIBLE_MODULE_ARGS"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"new"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<ul class="simple">
+<li><p>Then the module can be tested locally and directly. This skips the packing steps and uses module_utils files directly:</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre id="codecell4"><span></span><span class="gp">$ </span>python<span class="w"> </span>library/my_test.py<span class="w"> </span>/tmp/args.json
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p>It should return output like this:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre id="codecell5"><span></span><span class="p">{</span><span class="nt">"changed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"original_message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello"</span><span class="p">,</span><span class="w"> </span><span class="nt">"new_message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"goodbye"</span><span class="p">},</span><span class="w"> </span><span class="nt">"invocation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"module_args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello"</span><span class="p">,</span><span class="w"> </span><span class="nt">"new"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}}}</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell5">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+</section>
+<section id="verifying-your-module-code-in-a-playbook">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Verifying your module code in a playbook</a><a class="headerlink" href="#verifying-your-module-code-in-a-playbook" title="Link to this heading"></a></h3>
+<p>You can easily run a full test by including it in a playbook, as long as the <code class="docutils literal notranslate"><span class="pre">library</span></code> directory is in the same directory as the play:</p>
+<ul class="simple">
+<li><p>Create a playbook in any directory: <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">touch</span> <span class="pre">testmod.yml</span></code></p></li>
+<li><p>Add the following to the new playbook file:</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre id="codecell6"><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test my new module</span>
+<span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">run the new module</span>
+<span class="w">    </span><span class="nt">my_test</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">'hello'</span>
+<span class="w">      </span><span class="nt">new</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">testout</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dump test output</span>
+<span class="w">    </span><span class="nt">debug</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">'{{</span><span class="nv"> </span><span class="s">testout</span><span class="nv"> </span><span class="s">}}'</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<ul class="simple">
+<li><p>Run the playbook and analyze the output: <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">ansible-playbook</span> <span class="pre">./testmod.yml</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="testing-your-newly-created-module">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Testing your newly-created module</a><a class="headerlink" href="#testing-your-newly-created-module" title="Link to this heading"></a></h2>
+<p>The following two examples will get you started with testing your module code. Please review our <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing.html#developing-testing"><span class="std std-ref">testing</span></a> section for more detailed
+information, including instructions for <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing_documentation.html#testing-module-documentation"><span class="std std-ref">testing module documentation</span></a>, adding <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html#testing-integration"><span class="std std-ref">integration tests</span></a>, and more.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If contributing to Ansible, every new module and plugin should have 
+integration tests, even if the tests cannot be run on Ansible CI 
+infrastructure.
+In this case, the tests should be marked with the <code class="docutils literal notranslate"><span class="pre">unsupported</span></code> alias in <a class="reference external" href="https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/integration-aliases.html">aliases file</a>.</p>
+</div>
+<section id="performing-sanity-tests">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Performing sanity tests</a><a class="headerlink" href="#performing-sanity-tests" title="Link to this heading"></a></h3>
+<p>You can run through Ansible’s sanity checks in a container:</p>
+<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">ansible-test</span> <span class="pre">sanity</span> <span class="pre">-v</span> <span class="pre">--docker</span> <span class="pre">--python</span> <span class="pre">3.10</span> <span class="pre">MODULE_NAME</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that this example requires Docker to be installed and running. 
+If you’d rather not use a container for this, you can choose to use <code class="docutils literal notranslate"><span class="pre">--venv</span></code> instead of <code class="docutils literal notranslate"><span class="pre">--docker</span></code>.</p>
+</div>
+</section>
+</section>
+<section id="contributing-back-to-ansible">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Contributing back to Ansible</a><a class="headerlink" href="#contributing-back-to-ansible" title="Link to this heading"></a></h2>
+<p>If you would like to contribute to <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code> by adding a new feature or fixing a bug, <a class="reference external" href="https://help.github.com/articles/fork-a-repo/">create a fork</a> of the ansible/ansible repository and develop against a new feature branch using the <code class="docutils literal notranslate"><span class="pre">devel</span></code>
+ branch as a starting point. When you have a good working code change, 
+you can submit a pull request to the Ansible repository by selecting 
+your feature branch as a source and the Ansible devel branch as a 
+target.</p>
+<p>If you want to contribute a module to an <a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/contributing_maintained_collections.html#contributing-maintained-collections"><span class="std std-ref">Ansible collection</span></a>, review our <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_checklist.html#developing-modules-checklist"><span class="std std-ref">submission checklist</span></a>, <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_best_practices.html#developing-modules-best-practices"><span class="std std-ref">programming tips</span></a>, and <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_python_3.html#developing-python-3"><span class="std std-ref">strategy for maintaining Python 2 and Python 3 compatibility</span></a>, as well as information about <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing.html#developing-testing"><span class="std std-ref">testing</span></a> before you open a pull request.</p>
+<p>The <a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/index.html#ansible-community-guide"><span class="std std-ref">Community Guide</span></a> covers how to open a pull request and what happens next.</p>
+</section>
+<section id="communication-and-development-support">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Communication and development support</a><a class="headerlink" href="#communication-and-development-support" title="Link to this heading"></a></h2>
+<p>Join the <code class="docutils literal notranslate"><span class="pre">#ansible-devel</span></code> chat channel (using Matrix at ansible.im or using IRC at <a class="reference external" href="https://libera.chat/">irc.libera.chat</a>) for discussions surrounding Ansible development.</p>
+<p>For questions and discussions pertaining to using the Ansible product, join the <code class="docutils literal notranslate"><span class="pre">#ansible</span></code> channel.</p>
+<p>To find other topic-specific chat channels, look at <a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/communication.html#communication-irc"><span class="std std-ref">Community Guide, Communicating</span></a>.</p>
+</section>
+<section id="credit">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Credit</a><a class="headerlink" href="#credit" title="Link to this heading"></a></h2>
+<p>Thank you to Thomas Stringer (<a class="reference external" href="https://github.com/trstringer">@trstringer</a>) for contributing source
+material for this topic.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules.html" class="btn btn-neutral float-left" title="Should you develop a module?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_checklist.html" class="btn btn-neutral float-right" title="Contributing your module to an existing Ansible collection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>© Copyright Ansible project contributors.
+      <span class="lastupdated">Last updated on Aug 29, 2024.
+      </span></p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+<!-- begin analytics -->
+<script>
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = 'https://js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script>
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script>
+
+
+<script>_satellite["_runScript1"](function(event, target, Promise) {
+if(void 0!==_sdi.util){var pageHeight=document.body.scrollHeight,viewportHeight=window.innerHeight,initialPercent=viewportHeight/pageHeight,maxInterval=0;initialPercent=initialPercent>1?100:Math.round(100*initialPercent);var maxScroll=Math.floor(initialPercent);window._sdi.util.setCookie("sat_ppv",maxScroll),window.onscroll=function(){var i=window.pageYOffset/(document.body.scrollHeight-window.innerHeight)*100;i>maxScroll&&(maxScroll=Math.floor(i)),window._sdi.util.setCookie("sat_ppv",maxScroll)}}
+});</script><script>_satellite["_runScript2"](function(event, target, Promise) {
+void 0!==_sdi.util&&(window._sdi=window._sdi||{},window._sdi.addEventHandler=window.addEventListener?function(e,t,i){e.addEventListener(t,i,!1)}:function(e,t,i){e.attachEvent("on"+t,i)},window._sdi.addEventHandler(window,"message",(function(e){var t={},i=0;(-1!==e.origin.indexOf("loop=1")||e.srcElement&&e.srcElement.playerOptions&&1==e.srcElement.playerOptions.loop)&&(i=1);var a=0;if(e.srcElement&&e.srcElement.playerOptions&&1==e.srcElement.playerOptions.autoplay&&(a=1),e.origin.match(/youtube\.com/)&&"undefined"!=typeof JSON&&!i&&!a){t=JSON.parse(e.data);var d=window._sdi.yt.videos;if("infoDelivery"==t.event){var o,n={};for(var s in t.info.videoData&&((n=d[o=t.info.videoData.video_id]||{}).info=t.info,n.id=t.id,d[o]=n),window._sdi.yt.videos){(c=window._sdi.yt.videos[s]).id==t.id&&(n=c)}var r=window._sdi.yt.sc||{};n.info&&(Math.abs(t.info.currentTime-n.info.currentTime)>1.5&&!0===r.track&&(r.s().Media.stop(n.info.videoData.title,n.info.currentTime),"paused"!=n.state&&r.s().Media.play(n.info.videoData.title,t.info.currentTime)),n.info.currentTime=t.info.currentTime),2==t.info.playerState&&(r.s().Media.stop(n.info.videoData.title,n.info.currentTime),n.state="paused"),1==t.info.playerState&&(n.started?!0===r.track&&r.s().Media.play(n.info.videoData.title,n.info.currentTime):(n.started=!0,!0===r.track&&(r.s().Media.open(n.info.videoData.title,n.info.duration,"youtube"),r.s().Media.play(n.info.videoData.title,n.info.currentTime))),n.state="playing"),3==t.info.playerState&&n.started&&(!0===r.track&&r.s().Media.stop(n.info.videoData.title,n.info.currentTime),n.state="paused"),0===t.info.playerState&&(!0===r.track&&(r.s().Media.stop(n.info.videoData.title,n.info.currentTime),r.s().Media.close(n.info.videoData.title)),n.state="completed")}else if("onStateChange"==t.event){for(var s in window._sdi.yt.videos){var c;(c=window._sdi.yt.videos[s]).id==t.id&&(n=c)}r=window._sdi.yt.sc||{};1==t.info&&(n.started?!0===r.track&&r.s().Media.play(n.info.videoData.title,n.info.currentTime):(n.started=!0,!0===r.track&&(r.s().Media.open(n.info.videoData.title,n.info.duration,"youtube"),"paused"!=n.state&&r.s().Media.play(n.info.videoData.title,t.info.currentTime))),n.state="playing"),2==t.info&&(!0===r.track&&r.s().Media.stop(n.info.videoData.title,n.info.currentTime),n.state="paused"),3==t.info&&n.started&&(!0===r.track&&r.s().Media.stop(n.info.videoData.title,n.info.currentTime),n.state="paused"),0===t.info&&(!0===r.track&&(r.s().Media.stop(n.info.videoData.title,n.info.currentTime),r.s().Media.close(n.info.videoData.title)),n.state="completed")}}})),window._sdi.loadScript=function(e,t){var i=document.createElement("script");i.type="text/javascript",t&&"function"==typeof t&&(i.readyState?i.onreadystatechange=function(){"loaded"!==i.readyState&&"complete"!==i.readyState||(i.onreadystatechange=null,t())}:i.onload=function(){t()}),i.src=e,document.getElementsByTagName("head")[0].appendChild(i)},window._sdi.yt={stages:{},players:{},sc:{track:!0,s:function(){return s_gi(_satellite.getVar("rsid"))}},init:function(){for(var e=document.getElementsByTagName("script"),t=!1,i=(window._sdi.yt.videos,0);i<e.length;i++){(e[i].src||"").match(/youtube\.com\/iframe_api/)&&(t=!0)}!1===t?window._sdi.loadScript("//www.youtube.com/iframe_api",(function(){window._sdi.yt.ready("api")})):window._sdi.yt.ready("api")},ready:function(e){window._sdi.yt.stages[e]=!0,window._sdi.yt.stages.dom&&window._sdi.yt.stages.api&&window._sdi.yt.checkIframes()},checkIframes:function(){var e=window._sdi.yt.videos,t=1e3,i=0;document.querySelectorAll('iframe[src*="youtube"]').forEach((function(a){if("true"!=a.dataset.sdiyt){if(-1!=a.src.indexOf("loop=1"))var d=null;else{var o;d=a.src.match(/h?t?t?p?s?\:?\/\/www\.youtube(-nocookie)?\.com\/embed\/([\w-]{11})(?:\?.*)?/)}if(d){o=d.length>2?d[2]:"",a.id||(a.id=o+i,i++);var n=!1;if(!a.src.match(/origin/)&&document.location.protocol,a.src.match(/enablejsapi=1/)||(a.src+=(a.src.indexOf("?")>-1?"&":"?")+"enablejsapi=1",n=!0),void 0!==_sdi.util&&n){var s=this.cloneNode(!0);s.src=a.src,s.id=a.id,this.replaceWith(s)}else"undefined"!=typeof YT&&void 0!==YT.get?(ready=!0,e[o]={},!YT.get(a.id)||void 0===YT.get(a.id).v&&void 0!==YT.get(a.id).v.videoId?(e[o].player=new YT.Player(a.id,{events:{onReady:function(){},onStateChange:function(){},videoId:a.id}}),"true"!==a.getAttribute("data-sdiyt")&&a.setAttribute("data-sdiyt","true")):"true"!==a.getAttribute("data-sdiyt")&&a.setAttribute("data-sdiyt","true")):t=100}}})),setTimeout((function(){window._sdi.yt.checkIframes()}),t)},videos:{}},void 0!==window._sdi&&void 0!==window._sdi.addEventHandler&&window._sdi.addEventHandler(window,"load",(function(){document.querySelectorAll('iframe[src*="youtube"]').length>=1?(window._sdi.yt.init(),window._sdi.yt.ready("dom")):window._sdi.ytinterval=setInterval((function(){document.querySelectorAll('iframe[src*="youtube"]').length>=1&&(window._sdi.yt.init(),window._sdi.yt.ready("dom"),clearInterval(window._sdi.ytinterval))}),500)})));
+});</script><script>_satellite["_runScript3"](function(event, target, Promise) {
+window._sdi=window._sdi||{},window._sdi.dtm=window._sdi.dtm||{},window._sdi.dtm.video=window._sdi.dtm.video||{},_sdi.dtm.video.wistia={sc:{track:!0,s:function(){if(_sdi.util.getVar("window.s_gi")){if(void 0!==_satellite.getVar("rsid"))return s_gi(_satellite.getVar("rsid"));_satellite.logger.log("WISTIA Tracking:No RSID for s.Media: Wistia Tracking",5)}}},vids:[],timesPolled:0,pollToBind:function(){_satellite.logger.log("WISTIA Tracking: Polling for remaing video binding"),_sdi.dtm.video.wistia.timesPolled<30&&setTimeout((function(){_sdi.dtm.video.wistia.timesPolled++,_sdi.dtm.video.wistia.bindEvents()}),1e3)},bindEvents:function(){ws=_sdi.dtm.video.wistia,sc=ws.sc,s=sc.s,poll=!1,s().Media.playerName="wistia",s().Media.autoTrack=!1;for(var i=0;i<_sdi.dtm.video.wistia.vids.length;i++){var e=_sdi.dtm.video.wistia.vids[i],d=e.name(),t=e.duration();""!=d?void 0===e.adobeAnalyicsTrackingApplied?(_satellite.logger.log("WISTIA Tracking: Binding liteners to Wistia video named: "+d),void 0!==s()&&void 0!==s().Media&&(!0===sc.track&&(_satellite.logger.log("WISTIA Tracking: the video opened: "+d),s().Media.open(d,t,"wistia")),e.bind("play",(function(){void 0!==s().Media.list[this.name()]&&"object"!=typeof s().Media.list[this.name()]&&(_satellite.logger.log("WISTIA Tracking: the video opened: "+this.name()),s().Media.open(this.name(),this.duration(),"wistia")),_satellite.logger.log("WISTIA Tracking: the video played: "+this.name()),s().Media.play(this.name(),this.time())})),e.bind("pause",(function(){_satellite.logger.log("WISTIA Tracking: the video stoped: "+this.name()),s().Media.stop(this.name(),this.time())})),e.bind("seek",(function(i){_satellite.logger.log("WISTIA Tracking: the video seeked to "+i),s().Media.stop(this.name(),this.time()),s().Media.play(this.name(),i)})),e.bind("end",(function(){_satellite.logger.log("WISTIA Tracking: the video ended: "+this.name()),s().Media.stop(this.name(),this.time()),s().Media.close(this.name())})),e.adobeAnalyicsTrackingApplied=!0)):_satellite.logger.log("WISTIA Tracking: Liteners already bound to Wistia video named: "+d):poll=!0}poll&&_sdi.dtm.video.wistia.timesPolled<30&&_sdi.dtm.video.wistia.pollToBind()},findVideos:function(){_satellite.logger.log("WISTIA Tracking: Looking for videos"),window._wq=window._wq||[],_wq.push({id:"_all",onReady:function(i){_satellite.logger.log("WISTIA Tracking: Found "+i.name()+" videos"),_sdi.dtm.video.wistia.vids.push(i),_sdi.dtm.video.wistia.bindEvents()}})},init:function(){void 0!==window.Wistia?(_sdi.dtm.video.wistia.findVideos(),_sdi.dtm.video.wistia.vids.length>0&&_sdi.dtm.video.wistia.bindEvents()):_satellite.logger.log("WISTIA Tracking: No API detected")}},_sdi.dtm.video.wistia.init();
+});</script><script>_satellite["_runScript4"](function(event, target, Promise) {
+function addDataMapFromActions(t,e){return e&&e.dataMap&&(t=new Map([...t,...e.dataMap])),t}function extractAnalyticAttributesFromEvent(t){const e=new Map;for(const a of t.composedPath().reverse())if(a.hasAttributes?.())for(const i of a.attributes){if(isAnalyticsEntry(i.name)){let t=lowercaseFirst(i.name.replace("data-analytics-",""));t=normalizeKey(t),setKeyValueToMap(e,t,i.value)}if("data-analytics-data-map"===i.name){const[a,n]=i.value.split(":")??[];if(a===t.type){const a=n.split(",");for(let[i,n]of a.map((t=>t.split("="))))n?e.set(i,n):e.set(i,t[i])}}}return e}function normalizeKey(t){return Object.prototype.hasOwnProperty.call(ATTRIBUTES__MAP,t)&&("region"!==t&&_satellite.logger.warn("Data analytics "+t+" attribute is incorrect. Please review the spec and fix."),t=ATTRIBUTES__MAP[t]),t}function setKeyValueToMap(t,e,a){return t.has(e)?t.set(e,`${t.get(e)}|${a}`):t.set(e,a),t}function mergeSourceToMapFromQueue(t,e,a,i){if(a&&i){const n=t.get(i);n&&(t.set(i,{...n,...e,attributes:new Map([...n.attributes,...e.attributes]),clicked:e.clicked||n.clicked}),t.delete(a))}}const EVENTS=Object.freeze({PFE_NAV_EXPAND:"pfe-navigation:expanded-item",PFE_NAV_COLLAPSE:"pfe-navigation:collapsed-item",PFE_ACCORDION_CHANGE:"pfe-accordion:change",PFE_TABS_SHOWN:"pfe-tabs:shown-tab",RH_TAB_EXPAND:"tab-expand"});class MessageEvent extends Event{constructor(t){super("message"),this.detail={...this.detail,...t}}}class AnalyticsManager extends EventTarget{constructor(){super(),this._actions=new Map,this._messageQueue=new Map,this._listners=new Set,this._eventListenerHandler=this.eventListenerHandler.bind(this),this.registerEventListener("click"),this.scanEventMaps()}scanEventMaps(){for(const t of document.querySelectorAll("[data-analytics-event-map]")){const[e]=t.getAttribute("data-analytics-event-map")?.split?.(":")??[];e&&this.registerEventListener(e)}}registerEventListener(t,e={},a=document){this._listners.has(t)||(a.addEventListener(t,this._eventListenerHandler),this._actions.set(t,e),this._listners.add(t))}eventListenerHandler(t){const e=findRootElement(t);if(!e)return;if(this._messageQueue.has(t.type))return;let a=new Map;a=addDataMapFromActions(a,this._actions.get(t.type)),a=new Map([...a,...extractAnalyticAttributesFromEvent(t)]),a=addAttributes(e,a),this._messageQueue.set(t.type,{type:t.type,tagName:t.target.tagName,attributes:a,rootElement:e,eventDetail:"object"==typeof t.detail&&null!==t.detail?t.detail:{},track:this._actions.get(t.type).track,clicked:"click"===t.type}),requestAnimationFrame((()=>{if(this._messageQueue.size>0){const e=new Map(this._messageQueue);this._messageQueue=new Map;for(const[t,a]of e){const[t,i]=a.attributes?.get?.("data-analytics-event-map")?.split(":")??[];mergeSourceToMapFromQueue(e,a,t,i)}for(const[a,i]of e){const a=t.type,n=this._actions?.get?.(t.type)?.merge;mergeSourceToMapFromQueue(e,i,a,n)}for(let[t,a]of e)this.dispatchEvent(new MessageEvent({...a,eventMapped:!0}))}}))}}const analyticsManager=new AnalyticsManager;analyticsManager.registerEventListener(EVENTS.PFE_NAV_EXPAND,{merge:"click",dataMap:new Map([["event","Mega Menu Expanded"]])}),analyticsManager.registerEventListener(EVENTS.PFE_NAV_COLLAPSE,{merge:"click",dataMap:new Map([["event","Mega Menu Collapsed"]]),track:!1});const tabActions={merge:"click",dataMap:new Map([["event","Tab Link Clicked"],["isTab",!0]])};analyticsManager.registerEventListener(EVENTS.PFE_ACCORDION_CHANGE,tabActions),analyticsManager.registerEventListener(EVENTS.PFE_TABS_SHOWN,tabActions),analyticsManager.addEventListener("message",(t=>{if(t instanceof MessageEvent){const{eventMapped:a}=t.detail;if(a){const{attributes:a,rootElement:i,track:n,clicked:s}=t.detail;if(!1===n||!1===s)return;var e=buildDataObject(i,a);e.event&&pushEvent(e)}}}));var dataLayerName="appEventData",reservedAttributes=["event"],downloadExtensions=["doc","docx","eps","epub","jpg","png","svg","xls","ppt","pptx","pdf","xlsx","tab","csv","zip","txt","vsd","vxd","xml","js","css","rar","exe","wma","mov","avi","wmv","mp3","wav","m4v"],addAttributes=function(t,e){let a=!1,i=[];if(("Tab Link Clicked"!==e.get("event")||!e.has("tabHref"))&&(isTab(t)||e.get("isTab"))){a=!0,e.set("event","Tab Link Clicked");let n=t.getAttribute("href")||getLinkText(t)||"";n=n.trim(),e.set("tabHref",n),i.push("isTab")}if(!e.has("isJavascript")&&isJavascript(t)&&(a=!0,e.set("isJavascript",!0),i.push("isJavascript")),e.has("isDownload")&&e.has("fileName")||!isDownload(t)||(a=!0,e.set("isDownload",!0).set("fileName",t.href.split("/").pop()),i.push("isDownload")),e.has("isCrossPropertyDomain")&&e.has("linkTypeName")||!isCrossPropertyDomain(t)||(a=!0,e.set("isCrossPropertyDomain",!0).set("linkTypeName","cross property link"),i.push("isCrossPropertyDomain")),e.has("isCta")&&e.has("linkTypeName")||!isCta(t)||(a=!0,e.set("isCta",!0).set("linkTypeName","cta link"),i.push("isCta")),!e.has("isFooter")&&isFooter(t)&&(a=!0,e.set("isFooter",!0),i.push("isFooter")),!e.has("isInternalCampaign")&&isInternalCampaign(t)&&(a=!0,e.set("isInternalCampaign",!0),i.push("isInternalCampaign")),!e.has("isPromoSection")&&isPromoSection(t)&&(a=!0,e.set("isPromoSection",!0),i.push("isPromoSection")),(!e.has("isSearchContainer")||void 0===!e.has("linkTypeName"))&&isSearchContainer(t)){a=!0;let n=parseInt(t.getAttribute("data-render-position")||0)+1;e.set("isSearchContainer",!0).set("linkTypeName","search result click").set("searchQuery",_sdi.util.getQueryParam("search")).set("searchResultNum",n),i.push("isSearchContainer")}return e.has("isGemini")&&e.has("geminiEvalId")&&e.has("geminiOfferId")||!isGemini(t)||(a=!0,e.set("isGemini",!0).set("geminiEvalId",t.getAttribute("data-rh-gemini-evaluation-id")).set("geminiOfferId",t.getAttribute("data-rh-gemini-offer-id")),i.push("isGemini")),e.has("isExitLink")&&e.has("linkTypeName")||!isExitLink(t)||(a=!0,e.set("isExitLink",!0).set("linkTypeName","exit link"),i.push("isExitLink")),e.has("isSocial")&&!e.has("linkTypeName")||!isSocial(t)||(a=!0,e.set("isSocial",!0).set("linkTypeName","social link"),i.push("isSocial")),e.set("targetHost",getHostName(t.href)).set("internalCampaign",window._sdi.util.getQueryParam("icid",t.href)||window._sdi.util.getQueryParam("intcmp",t.href)||""),!0===a&&(console.debug("Attributes are set via DOM parsing. Please use the analytics map to declare analytics data."),console.debug("Attributes set via DOM parsing:",i)),e},getLinkText=function(t){return redactEmail(t.getAttribute("data-analytics-text")||t.getAttribute("sObjectId")||t.getAttribute("s-object-id")||t.getAttribute("sObjectID")||t.getAttribute("data-s-object-id")||t.innerText&&""!==t.innerText.trim()&&t.innerText.trim()||t.textContent&&""!==t.textContent.trim()&&t.textContent.trim()||t.querySelector("[alt]")&&t.querySelector("[alt]").getAttribute("alt")||t.querySelector("[title]")&&t.querySelector("[title]").getAttribute("title")||t.getAttribute("aria-label")||t.href||"unknown")},getRegions=function(t,e){if(e=e||[],!t)return e;var a=t.closest("[data-analytics-region]");return a?(e.push(a.dataset.analyticsRegion),e=getRegions(a.parentElement,e)):e},removeReservedAttributes=function(t){return reservedAttributes.forEach((function(e){t.delete(e)})),t},attributesMapToArray=function(t){const e=[];return t.forEach(((t,a)=>e[a]=t)),e},redactEmail=function(t){return t.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}/gi,"email_address_redacted")},buildDataObject=function(t,e,a){return a=a||getRegions(t),{event:buildEventName(t,e,a),linkInfo:Object.assign({href:t.href,regions:a.constructor===Array?a.reverse().join("|"):a,text:getLinkText(t)},attributesMapToArray(removeReservedAttributes(e)))}},buildEventName=function(t,e){return e.has("event")?e.get("event"):"Master Link Clicked"},findRootElement=function(t){var e;if(Object.values([EVENTS.PFE_NAV_EXPAND,EVENTS.PFE_NAV_COLLAPSE,EVENTS.PFE_ACCORDION_CHANGE]).includes(t.type))e=t.detail.toggle;else if(t.type===EVENTS.PFE_TABS_SHOWN){const a=t.target.closest("pfe-content-set");if("PFE-CONTENT-SET"===t.target.tagName){const i=t.detail.tab.querySelector("slot");e=a.getSlot(i.getAttribute("name"))[0]}}else"PFE-TAB"===t.target.tagName||"RH-TAB"===t.target.tagName?e=t.target:"click"===t.type&&"PFE-CONTENT-SET"===t.target.tagName?e=t.target.shadowRoot.activeElement:void 0!==t.target&&(e=t.target.closest('a, button, [data-analytics-event], [role="button"]'));return e||t.composedPath().find((t=>"A"===t.tagName||"BUTTON"===t.tagName||"function"==typeof t.hasAttribute&&t.hasAttribute("data-analytics-event")))},isJavascript=function(t){return new RegExp("^javascript:","i").test(t.href)},isDownload=function(t){return new RegExp("("+downloadExtensions.join("|")+")$","i").test(t.href)},isExitLink=function(t){return!!t.href&&!new RegExp(_satellite.getVar("exitExclusionArray").join("|"),"i").test(t.href)},isSocial=function(t){var e=new RegExp(_satellite.getVar("socialDomainList").join("$|")+"$","i"),a=getHostName(t.href);return e.test(a)},isCrossPropertyDomain=function(t){return document.location.hostname!==getHostName(t.href)&&"access.cdn.redhat.com"!==getHostName(t.href)&&new RegExp(_satellite.getVar("redHatDomains").join("|"),"i").test(getHostName(t.href))},isCta=function(t){var e=["pfe-cta a",".cta-primary",".account-register-link","a.rh-cta-link","p.cta-group a","[data-ux-cta-type*='video-play']","div.ux-cta a.ux-cta-link:not([data-ux-cta-type*='video-play'])","a.rh-promo-cta-link","[data-rh-cta-type='primary']","[data-ux-cta-type='primary']","rh-cta a"];for(let a=0;a<e.length;a++)if(t.matches(e[a])||null!==t.closest(e[a]))return!0},isTab=function(t){return t.classList.contains('[data-toggle="tab"]')||t.classList.contains("pfe-accordion-header")||t.classList.contains('[role="tab"]')||t.classList.contains("ux-vtab-nav-link")||t.classList.contains("ux-tile-nav-link")||t.classList.contains("btn-brick")||t.classList.contains("ux-htab-nav-link")||t.classList.contains("ux-horizontal-tab-nav-link")||t.classList.contains("ux-oss-hub-filter-type-text")||t.classList.contains("ux-htabb-nav-link")||"tab"===t.getAttribute("data-toggle")||"PFE-ACCORDION-HEADER"===t.tagName||"tab"===t.getAttribute("role")||"RH-TAB"===t.tagName},isFooter=function(t){let e=t.closest("footer");return void 0!==e&&null!=e},isInternalCampaign=function(t){let e;return(""!=window._sdi.util.getQueryParam("icid",t.href)||""!=window._sdi.util.getQueryParam("intcmp",t.href))&&(e=t.getAttribute("role")||"",_satellite.logger.log("isInternalCampaign: linkRole:",e),"tab"!==e||void 0)},isPromoSection=function(t){let e=t.closest("div.band-hero");return void 0!==e&&null!=e},isSearchContainer=function(t){_satellite.logger.log("isSearchContainer ran");let e=t.closest("div.cp-sidebar")||t.closest("div.cp-search-results")||t.closest("div.rhdc-search-listing--content a");return _satellite.logger.log("isSearchContainer el",e),_satellite.logger.log("isSearchContainer return",void 0!==e&&null!=e),void 0!==e&&null!=e},isGemini=function(t){var e=["div.ux-cta a[data-rh-gemini-evaluation-id].ux-cta-link","div.rc-cta-primary a[data-rh-gemini-evaluation-id].ux-cta-link"];for(let a=0;a<e.length;a++)if(t.matches(e[a]))return!0},getHostName=function(t){let e=document.createElement("a");return e.href=t,e.hostname},pushEvent=function(t){window.appEventData=window.appEventData||[],console.info("Pushing to the dataLayer",t);var e=window[dataLayerName];Array.isArray(e)&&e.push(t)};const isAnalyticsEntry=t=>t.startsWith("data-analytics-"),lowercaseFirst=t=>`${t.charAt(0).toLowerCase()}${t.slice(1)}`,ATTRIBUTES__MAP={filename:"fileName",internalcampaign:"internalCampaign",isdownload:"isDownload",iscrosspropertydomain:"isCrossPropertyDomain",istab:"isTab",linktype:"linkType",linktypename:"linkTypeName",region:"regions"};
+});</script><div class="st-injected-content-generated st-install-yABGvz2N8PwcwBxyfzUc" data-st-install-key="yABGvz2N8PwcwBxyfzUc" id="st-injected-content">
+<div class="st-ui-embed st-search-chrome-overlay-output st-search-escape-hide-outputs st-search-zoom-on-mobile" style="display: none;">
+  
+    <div class="st-ui-overlay st-search-hide-outputs"></div>
+  
+  <!-- Swiftype input and results overlay -->
+  
+  <div class="st-ui-container st-ui-container-overlay  st-ui-injected-overlay-container ">
+    <!-- HEADER -->
+    <div class="st-ui-container-header_bar st-position-container">
+      
+        <section class="st-ui-header">
+          <form>
+            <input class="st-default-search-input st-search-set-focus" type="text" placeholder="Search this site" aria-label="Search this site" id="st-overlay-search-input" autocomplete="off" autocorrect="off" autocapitalize="none">
+          </form>
+          <span class="st-ui-search-icon"></span>
+
+          
+            <a class="st-ui-close-button st-search-hide-outputs">Close</a>
+          
+
+          
+        </section>
+      
+    </div>
+
+    <!-- LEFT SIDEBAR -->
+    <div class="st-ui-container-left_sidebar st-position-container">
+      
+      <div class="st-ui-injected-search-controls">
+        
+          
+        
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="st-ui-container-right_sidebar st-position-container">
+      
+      <div class="st-ui-injected-container-right_sidebar">
+        <div class="st-ui-injected-search-controls">
+          
+            
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIMARY CONTENT -->
+    <div class="st-ui-container-primary_content st-position-container">
+      
+        <section class="st-ui-slide-autocomplete st-autocomplete-keyboard-navigable st-autocomplete-transient-on-select-and-results" data-st-target-element="#st-overlay-search-input" data-st-active-query-class="active" style="display: none;">
+          <span class="st-ui-type-heading-small">suggested results</span>
+          <div class="st-autocomplete-results"><div class="st-query-present" style="display: none;"></div></div>
+        </section>
+
+        <section class="st-ui-content st-search-results"><div class="st-query-not-present">
+          <span class="st-ui-fallback"></span>
+        </div><div class="st-query-present" style="display: none;"></div></section>
+      
+
+      <section class="st-ui-no-results st-search-suggestions"><div class="st-query-not-present">
+      </div></section>
+    </div>
+
+
+
+    <!-- FOOTER -->
+    <div class="st-ui-container-footer_bar st-position-container">
+      <section class="st-ui-footer">
+        
+          <span class="st-ui-search-summary st-search-summary" aria-live="polite"></span>
+        
+        <span class="st-ui-pagination st-search-pagination"></span>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="st-default-autocomplete" data-st-target-element=".st-default-search-input" style="display: none; position: absolute; top: 49px; left: 0px; z-index: 999999;">
+  <div class="st-autocomplete-results st-ui-autocomplete"><div class="st-query-present" style="display: none;"></div></div>
+</div>
+<a class="st-search-show-outputs st-ui-search-tab">Search this site</a></div><script>_satellite["_runScript5"](function(event, target, Promise) {
+if("yes"==_satellite.getVar("tagsAllowedFunc")&&"yes"==_satellite.getVar("rhMarketingLoaded")){var scCid=_satellite.cookie.get("rh_omni_tc");if(""!==scCid&&void 0!==scCid)for(var updatedLink="",anchors=window.document.getElementsByTagName("a"),i=0;i<anchors.length;i++)(anchors[i].href.indexOf("vts.inxpo.com")>-1||anchors[i].href.indexOf("onlinexperiences.com")>-1)&&-1==anchors[i].href.toLowerCase().indexOf("affiliatedata=")&&""!==(updatedLink=window._sdi.util.appendQuery(anchors[i].href,"AffiliateData",scCid))&&(anchors[i].href=updatedLink)}
+});</script><iframe sandbox="allow-scripts allow-same-origin" title="Adobe ID Syncing iFrame" id="destination_publishing_iframe_redhat_0" name="destination_publishing_iframe_redhat_0_name" style="display: none; width: 0px; height: 0px;" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/dest5.html" class="aamIframeLoaded"></iframe><script>_satellite["_runScript6"](function(event, target, Promise) {
+void 0!==_sdi.util.loadScript&&_sdi.util.loadScript("https://www.googletagmanager.com/gtag/js?id=DC-10727170",(function(){window.dataLayer=window.dataLayer||[],window.gtag=function(){dataLayer.push(arguments)},gtag("js",new Date),gtag("config","DC-10727170"),gtag("config","AW-991646916"),gtag("event","conversion",{allow_custom_scripts:!0,u1:window.location.hostname+window.location.pathname,send_to:"DC-10727170/unive0/redha0+standard"})}));
+});</script><iframe height="0" width="0" style="display: none; visibility: hidden;" src="Developing%20modules%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/activityi.html"></iframe><script>_satellite["_runScript7"](function(event, target, Promise) {
+if("yes"==_satellite.getVar("tagsAllowedFunc")&&"yes"==_satellite.getVar("rhMarketingLoaded")){var scCid=_satellite.cookie.get("rh_omni_tc");if(""!==scCid&&void 0!==scCid)for(var updatedLink="",anchors=window.document.getElementsByTagName("a"),i=0;i<anchors.length;i++)(anchors[i].href.indexOf("vts.inxpo.com")>-1||anchors[i].href.indexOf("onlinexperiences.com")>-1)&&-1==anchors[i].href.toLowerCase().indexOf("affiliatedata=")&&""!==(updatedLink=window._sdi.util.appendQuery(anchors[i].href,"AffiliateData",scCid))&&(anchors[i].href=updatedLink)}
+});</script></body></html>

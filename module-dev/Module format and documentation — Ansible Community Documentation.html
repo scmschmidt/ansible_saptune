@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module format and documentation — Ansible Community Documentation</title>
+      <link rel="stylesheet" type="text/css" href="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/pygments.css">
+      <link rel="stylesheet" type="text/css" href="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/ansible.css">
+      <link rel="stylesheet" type="text/css" href="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/antsibull-minimal.css">
+      <link rel="stylesheet" type="text/css" href="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/copybutton.css">
+      <link rel="stylesheet" type="text/css" href="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/rtd-ethical-ads.css">
+
+  
+    <link rel="shortcut icon" href="https://docs.ansible.com/ansible/latest/_static/images/Ansible-Mark-RGB_Black.png">
+    <link rel="canonical" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_documenting.html">
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/banner.js" type="text/javascript" id="cookieBanner-330046" data-cookieconsent="ignore" data-hs-ignore="true" data-loader="hs-scriptloader" data-hsjs-portal="330046" data-hsjs-env="prod" data-hsjs-hublet="na1"></script><script type="text/javascript" async="" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/js_002"></script><script type="text/javascript" async="" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/js_003"></script><script type="text/javascript" async="" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/analytics.js"></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/330046.js" type="text/javascript" id="hs-script-loader"></script><script id="hs-analytics" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/330046_002.js"></script><script async="" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/gtm.js"></script><script async="" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/st.js"></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/jquery.js"></script>
+        <script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/documentation_options.js"></script>
+        <script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/doctools.js"></script>
+        <script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/sphinx_highlight.js"></script>
+        <script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/clipboard.min.js"></script>
+        <script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/copybutton.js"></script>
+    <script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/theme.js"></script>
+    <link rel="index" title="Index" href="https://docs.ansible.com/ansible/latest/genindex.html">
+    <link rel="search" title="Search" href="https://docs.ansible.com/ansible/latest/search.html">
+    <link rel="next" title="Adjacent YAML documentation files" href="https://docs.ansible.com/ansible/latest/dev_guide/sidecar.html">
+    <link rel="prev" title="Debugging modules" href="https://docs.ansible.com/ansible/latest/dev_guide/debugging.html"><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+<script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/dtm.js"></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/AppMeasurement.min.js" async=""></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/AppMeasurement_Module_ActivityMap.min.js" async=""></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/rh.mktg.js"></script>
+
+
+<!-- <meta class="swiftype" name="published_at" data-type="date" content="2017-12-13" /> -->
+<meta class="swiftype" name="version" data-type="string" content="10">
+
+<!-- Google Tag Manager Data Layer -->
+<script>
+ dataLayer = [];
+</script>
+<!-- End Google Tag Manager Data Layer -->
+
+
+
+<script>
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','https://s.swiftypecdn.com/install/v2/st.js','_st');
+
+_st('install','yABGvz2N8PwcwBxyfzUc','2.0.0');
+</script>
+
+<script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC64c4139883b6449e9007dae118d46129-source.min.js" async=""></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RCb3347083d3c74782ad8b87082d840d03-source.min.js" async=""></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RCaeae9fdd3ba243ddb2ee3b09b79202c7-source.min.js" async=""></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC9bdf9a2dcb6841e1b69b64c7654c3182-source.min.js" async=""></script><link rel="stylesheet" type="text/css" href="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/new_embed-2552d8d62d9c60f59b3b11a5d083d1ebd090c72de809fc7c76.css"><style type="text/css">.st-install-yABGvz2N8PwcwBxyfzUc .st-ui-result .st-ui-type-heading { color:#5bbdbf !important }
+.st-install-yABGvz2N8PwcwBxyfzUc .st-ui-result em {font-style:normal; font-weight:bold; background-color:#f6fcfe !important}</style><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC8fd79e9f4e5942d7b94e766cb5eb9256-source.min.js" async=""></script><script type="text/javascript" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/elqCfg.min.js"></script><script src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/RC0548ca5c51b34db08240b0dce9707f2f-source.min.js" async=""></script><script type="text/javascript" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/js"></script><script type="text/javascript" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/svrGP"></script></head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+<!-- Google Tag Manager -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PSB293" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-PSB293');</script>
+<!-- End Google Tag Manager -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+    <li><a href="https://forum.ansible.com/" target="_blank">Ansible community forum</a></li>
+    <li><a href="https://docs.ansible.com/" target="_blank">Documentation</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="https://docs.ansible.com/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/Ansible-Mark-RGB_White.png" alt="Ansible Logo">
+  <div class="DocSiteNav-title">Ansible Community Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+          
+          
+          <a href="https://docs.ansible.com/ansible/latest/index.html" class="icon icon-home">
+            Ansible
+          </a>
+              <div class="version">
+                10
+              </div><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    <form class="version-dropdown" method="get">
+      <script>
+        function switchVersionTo(slug) {
+          var current_url_path = window.location.pathname;
+          var url_version = current_url_path.search("/10/") > -1
+            ? "/10/"
+            : "/latest/";
+          var new_version_url = current_url_path.replace(url_version, "/" + slug + "/");
+          window.location.replace(new_version_url);
+        }
+      </script>
+      <label class="sr-only" for="version-list">Select version:</label>
+      <select class="version-list" id="version-list" onchange="switchVersionTo(this.value);">
+        
+        <option value="latest" selected="selected">
+            latest
+        </option>
+        
+        <option value="9">
+            9
+        </option>
+        
+        <option value="2.9">
+            2.9
+        </option>
+        
+        <option value="devel">
+            devel
+        </option>
+        
+      </select>
+    </form>
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" autocomplete="off" autocorrect="off" autocapitalize="none">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <p class="caption" role="heading"><span class="caption-text">Ansible getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/getting_started/index.html">Getting started with Ansible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/getting_started_ee/index.html">Getting started with Execution Environments</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation, Upgrade &amp; Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/installation_guide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/porting_guides/porting_guides.html">Ansible Porting Guides</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/inventory_guide/index.html">Building Ansible inventories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/command_guide/index.html">Using Ansible command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/playbook_guide/index.html">Using Ansible playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/vault_guide/index.html">Protecting sensitive data with Ansible vault</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/module_plugin_guide/index.html">Using Ansible modules and plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections_guide/index.html">Using Ansible collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/os_guide/index.html">Using Ansible on Windows and BSD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/tips_tricks/index.html">Ansible tips and tricks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing to Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/index.html">Ansible Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/contributions_collections.html">Ansible Collections Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/contributions.html">ansible-core Contributors Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/advanced_index.html">Advanced Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/style_guide/index.html">Ansible documentation style guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extending Ansible</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/index.html">Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Ansible Scenarios</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/scenario_guides/cloud_guides.html">Legacy Public Cloud Guides</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Network Automation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/network/getting_started/index.html">Network Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/network/user_guide/index.html">Network Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/network/dev_guide/index.html">Network Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Ansible Galaxy</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/galaxy/user_guide.html">Galaxy User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/galaxy/dev_guide.html">Galaxy Developer Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference &amp; Appendices</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/index.html">Collection Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/all_plugins.html">Indexes of all modules and plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html">Playbook Keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html">Return Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/config.html">Ansible Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/general_precedence.html">Controlling how Ansible behaves: precedence rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">YAML Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html">Python 3 Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/interpreter_discovery.html">Interpreter Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html">Releases and maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/test_strategies.html">Testing Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/index.html">Sanity Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/module_utils.html">Ansible Reference: Module Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html">Special Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/tower.html">Red Hat Ansible Automation Platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/automationhub.html">Ansible Automation Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/reference_appendices/logging.html">Logging Ansible output</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Roadmaps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/roadmap/ansible_roadmap_index.html">Ansible Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/roadmap/ansible_core_roadmap_index.html">ansible-core Roadmaps</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+<!-- changeable widget links to tower - do not change as image controlled by Ansible-->
+<div id="sideBanner">
+  <br>
+  <a href="https://www.ansible.com/docs-left?utm_source=docs">
+    <img style="border-width:0px;" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/ASB-docs-left-rail.webp">
+  </a>
+  <br><br><br>
+</div>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="https://docs.ansible.com/ansible/latest/index.html">Ansible</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="https://docs.ansible.com/ansible/latest/index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="https://docs.ansible.com/ansible/latest/dev_guide/index.html">Developer Guide</a></li>
+      <li class="breadcrumb-item active">Module format and documentation</li>
+  <li class="wy-breadcrumbs-aside">
+            <!-- Remove main index page as it is no longer editable -->
+            
+              <a href="https://github.com/ansible/ansible-documentation/edit/devel/docs/docsite/rst/dev_guide/developing_modules_documenting.rst?description=%23%23%23%23%23%20SUMMARY%0A%3C!---%20Your%20description%20here%20--%3E%0A%0A%0A%23%23%23%23%23%20ISSUE%20TYPE%0A-%20Docs%20Pull%20Request%0A%0A%2Blabel:%20docsite_pr" class="fa fa-github"> Edit on GitHub</a>
+            
+  </li>
+  </ul>
+  <hr>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script>
+    function startsWith(str, needle) {
+      return str.slice(0, needle.length) == needle
+    }
+    function startsWithOneOf(str, needles) {
+      return needles.some(function (needle) {
+        return startsWith(str, needle);
+      });
+    }
+    var banner = '';
+      var extra_banner = '';
+    /*use extra_banner for when we want something extra, like a survey or Community Day notice */
+   /*  var extra_banner =
+      '<div id="latest_extra_banner_id" class="admonition important">' +
+        '<p style="padding-bottom: 1.2rem;">' +
+        'Discuss Ansible in the new <a href="https://forum.ansible.com/t/welcome-to-the-ansible-community/5">Ansible Forum!</a>' +
+        '</p>' +
+      '</div>';
+      */
+    // Create a banner if we're not on the official docs site
+    if (location.host == "docs.testing.ansible.com") {
+      document.write('<div id="testing_banner_id" class="admonition important">' +
+                     '<p>This is the testing site for Ansible Documentation. Unless you are reviewing pre-production changes, please visit the <a href="https://docs.ansible.com/ansible/latest/">official documentation website</a>.</p> <p></p>' +
+                     '</div>');
+    }
+    
+      // Create a banner
+      current_url_path = window.location.pathname;
+
+      var important = false;
+      var msg = '<p>';
+      if (startsWith(current_url_path, "/ansible-core/")) {
+        msg += 'You are reading documentation for Ansible Core, which contains no plugins except for those in ansible.builtin. For documentation of the Ansible package, go to <a href="/ansible/latest">the latest documentation</a>.';
+      } else if (startsWithOneOf(current_url_path, ["/ansible/latest/", "/ansible/10/"])) {
+        /* temp extra banner to advertise something */
+        banner += extra_banner;
+
+        msg += 'This is the <b>latest</b> (stable) Ansible community documentation. For Red Hat Ansible Automation Platform subscriptions, see <a href="https://access.redhat.com/support/policy/updates/ansible-automation-platform">Life Cycle</a> for version details.';
+      } else if (startsWith(current_url_path, "/ansible/2.9/")) {
+        msg += 'You are reading the latest Red Hat released version of the Ansible documentation. Community users can use this version, or select <b>latest</b> from the version selector to the left for the most recent community version.';
+      } else if (startsWith(current_url_path, "/ansible/devel/")) {
+        /* temp extra banner to advertise something */
+        banner += extra_banner;
+
+        msg += 'You are reading the <b>devel</b> version of the Ansible documentation - this version is not guaranteed stable. Use the version selection to the left if you want the <b>latest</b> (stable) released version.';
+      } else {
+        msg += 'You are reading an older version of the Ansible documentation. Use the version selection to the left if you want the <b>latest</b> (stable) released version.';
+        /* temp extra banner to advertise something - this is for testing*/
+        banner += extra_banner;
+
+      }
+      msg += '</p>';
+
+      banner += '<div id="banner_id" class="admonition ';
+      banner += important ? 'important' : 'caution';
+      banner += '">';
+      banner += important ? '<br>' : '';
+      banner += msg;
+      banner += important ? '<br>' : '';
+      banner += '</div>';
+      document.write(banner);
+    
+  </script><div id="banner_id" class="admonition caution"><p>This is the <b>latest</b> (stable) Ansible community documentation. For Red Hat Ansible Automation Platform subscriptions, see <a href="https://access.redhat.com/support/policy/updates/ansible-automation-platform">Life Cycle</a> for version details.</p></div>
+
+
+  
+           <div itemprop="articleBody">
+             
+  <section id="module-format-and-documentation">
+<span id="module-documenting"></span><span id="developing-modules-documenting"></span><h1>Module format and documentation<a class="headerlink" href="#module-format-and-documentation" title="Link to this heading"></a></h1>
+<p>If you want to contribute your module to most Ansible collections, 
+you must write your module in Python and follow the standard format 
+described below. (Unless you’re writing a Windows module, in which case 
+the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_general_windows.html#developing-modules-general-windows"><span class="std std-ref">Windows guidelines</span></a> apply.) In addition to following this format, you should review our <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_checklist.html#developing-modules-checklist"><span class="std std-ref">submission checklist</span></a>, <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_best_practices.html#developing-modules-best-practices"><span class="std std-ref">programming tips</span></a>, and <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_python_3.html#developing-python-3"><span class="std std-ref">strategy for maintaining Python 2 and Python 3 compatibility</span></a>, as well as information about <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing.html#developing-testing"><span class="std std-ref">testing</span></a> before you open a pull request.</p>
+<p>Every Ansible module written in Python must begin with seven standard
+ sections in a particular order, followed by the code. The sections in 
+order are:</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#python-shebang-utf-8-coding" id="id6">Python shebang &amp; UTF-8 coding</a></p></li>
+<li><p><a class="reference internal" href="#copyright-and-license" id="id7">Copyright and license</a></p></li>
+<li><p><a class="reference internal" href="#ansible-metadata-block" id="id8">ANSIBLE_METADATA block</a></p></li>
+<li><p><a class="reference internal" href="#documentation-block" id="id9">DOCUMENTATION block</a></p></li>
+<li><p><a class="reference internal" href="#examples-block" id="id10">EXAMPLES block</a></p></li>
+<li><p><a class="reference internal" href="#return-block" id="id11">RETURN block</a></p></li>
+<li><p><a class="reference internal" href="#python-imports" id="id12">Python imports</a></p></li>
+<li><p><a class="reference internal" href="#testing-module-documentation" id="id13">Testing module documentation</a></p></li>
+</ul>
+</nav>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Why don’t the imports go first?</p>
+<p>Keen Python programmers may notice that contrary to PEP 8’s advice we don’t put <code class="docutils literal notranslate"><span class="pre">imports</span></code> at the top of the file. This is because the <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> through <code class="docutils literal notranslate"><span class="pre">RETURN</span></code>
+ sections are not used by the module code itself; they are essentially 
+extra docstrings for the file. The imports are placed after these 
+special variables for the same reason as PEP 8 puts the imports after 
+the introductory comments and docstrings. This keeps the active parts of
+ the code together and the pieces which are purely informational apart. 
+The decision to exclude E402 is based on readability (which is what PEP 8
+ is about). Documentation strings in a module are much more similar to 
+module level docstrings, than code, and are never utilized by the module
+ itself. Placing the imports below this documentation and closer to the 
+code, consolidates and groups all related code in a congruent manner to 
+improve readability, debugging and understanding.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Copy old modules with care!</strong></p>
+<p>Some older Ansible modules have <code class="docutils literal notranslate"><span class="pre">imports</span></code> at the bottom of the file, <code class="docutils literal notranslate"><span class="pre">Copyright</span></code> notices with the full GPL prefix, and/or <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code>
+ fields in the wrong order. These are legacy files that need updating - 
+do not copy them into new modules. Over time we are updating and 
+correcting older modules. Please follow the guidelines on this page!</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For non-Python modules you still create a <code class="docutils literal notranslate"><span class="pre">.py</span></code> file for documentation purposes. Starting at ansible-core 2.14 you can instead choose to create a <code class="docutils literal notranslate"><span class="pre">.yml</span></code> file that has the same data structure, but in pure YAML.
+With YAML files, the examples below are easy to use by removing Python quoting and substituting <code class="docutils literal notranslate"><span class="pre">=</span></code> for <code class="docutils literal notranslate"><span class="pre">:</span></code>, for example <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span> <span class="pre">=</span> <span class="pre">r'''</span> <span class="pre">...</span> <span class="pre">'''</span></code> to <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION:</span> <span class="pre">...</span></code> and removing closing quotes. <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/sidecar.html#adjacent-yaml-doc"><span class="std std-ref">Adjacent YAML documentation files</span></a></p>
+</div>
+<section id="python-shebang-utf-8-coding">
+<span id="shebang"></span><h2><a class="toc-backref" href="#id6" role="doc-backlink">Python shebang &amp; UTF-8 coding</a><a class="headerlink" href="#python-shebang-utf-8-coding" title="Link to this heading"></a></h2>
+<p>Begin your Ansible module with <code class="docutils literal notranslate"><span class="pre">#!/usr/bin/python</span></code> - this “shebang” allows <code class="docutils literal notranslate"><span class="pre">ansible_python_interpreter</span></code> to work. Follow the shebang immediately with <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">-*-</span> <span class="pre">coding:</span> <span class="pre">utf-8</span> <span class="pre">-*-</span></code> to clarify that the file is UTF-8 encoded.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">#!/usr/bin/env</span></code> makes <code class="docutils literal notranslate"><span class="pre">env</span></code> the interpreter and bypasses <code class="docutils literal notranslate"><span class="pre">ansible_&lt;interpreter&gt;_interpreter</span></code> logic.</p></li>
+<li><p>Passing arguments to the interpreter in the shebang does not work (for example, <code class="docutils literal notranslate"><span class="pre">#!/usr/bin/env</span> <span class="pre">python</span></code>) .</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you develop the module using a different scripting language, adjust the interpreter accordingly (<code class="docutils literal notranslate"><span class="pre">#!/usr/bin/&lt;interpreter&gt;</span></code>) so <code class="docutils literal notranslate"><span class="pre">ansible_&lt;interpreter&gt;_interpreter</span></code> can work for that specific language.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Binary modules do not require a shebang or an interpreter.</p>
+</div>
+</section>
+<section id="copyright-and-license">
+<span id="copyright"></span><h2><a class="toc-backref" href="#id7" role="doc-backlink">Copyright and license</a><a class="headerlink" href="#copyright-and-license" title="Link to this heading"></a></h2>
+<p>After the shebang and UTF-8 coding, add a <a class="reference external" href="https://www.linuxfoundation.org/blog/copyright-notices-in-open-source-software-projects/">copyright line</a>
+ with the original copyright holder and a license declaration. The 
+license declaration should be ONLY one line, not the full GPL prefix.:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre id="codecell0"><span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Copyright: Contributors to the Ansible project</span>
+<span class="c1"># GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p>Additions to the module (for example, rewrites) are not permitted to 
+add additional copyright lines other than the default copyright 
+statement if missing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre id="codecell1"><span></span><span class="c1"># Copyright: Contributors to the Ansible project</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p>Any legal review will include the source control history, so an 
+exhaustive copyright header is not necessary.
+Please do not include a copyright year. If the existing copyright 
+statement includes a year, do not edit the existing copyright year. Any 
+existing copyright header should not be modified without permission from
+ the copyright author.</p>
+</section>
+<section id="ansible-metadata-block">
+<span id="id1"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">ANSIBLE_METADATA block</a><a class="headerlink" href="#ansible-metadata-block" title="Link to this heading"></a></h2>
+<p>Since we moved to collections we have deprecated the METADATA 
+functionality, it is no longer required for modules, but it will not 
+break anything if present.</p>
+</section>
+<section id="documentation-block">
+<span id="id2"></span><h2><a class="toc-backref" href="#id9" role="doc-backlink">DOCUMENTATION block</a><a class="headerlink" href="#documentation-block" title="Link to this heading"></a></h2>
+<p>After the shebang, the UTF-8 coding, the copyright line, and the license section comes the <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> block. Ansible’s online module documentation is generated from the <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> blocks in each module’s source code. The <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> block must be valid YAML. You may find it easier to start writing your <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> string in an <a class="reference internal" href="https://docs.ansible.com/ansible/latest/community/other_tools_and_programs.html#other-tools-and-programs"><span class="std std-ref">editor with YAML syntax highlighting</span></a> before you include it in your Python file. You can start by copying our <a class="reference external" href="https://github.com/ansible/ansible/blob/devel/examples/DOCUMENTATION.yml">example documentation string</a> into your module file and modifying it. If you run into syntax issues in your YAML, you can validate it on the <a class="reference external" href="http://www.yamllint.com/">YAML Lint</a> website.</p>
+<dl class="simple">
+<dt>Module documentation should briefly and accurately define what each 
+module and option does, and how it works with others in the underlying 
+system. Documentation should be written for broad audience–readable both
+ by experts and non-experts.</dt><dd><ul class="simple">
+<li><p>Descriptions should always start with a capital letter and end with a full stop. Consistency always helps.</p></li>
+<li><p>Verify that arguments in doc and module spec dict are identical.</p></li>
+<li><p>For password / secret arguments <code class="docutils literal notranslate"><span class="pre">no_log=True</span></code> should be set.</p></li>
+<li><p>For arguments that seem to contain sensitive information but <strong>do not</strong> contain secrets, such as “password_length”, set <code class="docutils literal notranslate"><span class="pre">no_log=False</span></code> to disable the warning message.</p></li>
+<li><p>If an option is only sometimes required, describe the conditions. For example, “Required when I(state=present).”</p></li>
+<li><p>If your module allows <code class="docutils literal notranslate"><span class="pre">check_mode</span></code>, reflect this fact in the documentation.</p></li>
+</ul>
+</dd>
+</dl>
+<p>To create clear, concise, consistent, and useful documentation, follow the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/style_guide/index.html#style-guide"><span class="std std-ref">style guide</span></a>.</p>
+<p>Each documentation field is described below. Before committing your 
+module documentation, please test it at the command line and as HTML:</p>
+<ul class="simple">
+<li><p>As long as your module file is <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_locally.html#local-modules"><span class="std std-ref">available locally</span></a>, you can use <code class="docutils literal notranslate"><span class="pre">ansible-doc</span> <span class="pre">-t</span> <span class="pre">module</span> <span class="pre">my_module_name</span></code> to view your module documentation at the command line. Any parsing errors will be obvious - you can view details by adding <code class="docutils literal notranslate"><span class="pre">-vvv</span></code> to the command.</p></li>
+<li><p>You should also <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing_documentation.html#testing-module-documentation"><span class="std std-ref">test the HTML output</span></a> of your module documentation.</p></li>
+</ul>
+<section id="documentation-fields">
+<h3>Documentation fields<a class="headerlink" href="#documentation-fields" title="Link to this heading"></a></h3>
+<p>All fields in the <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> block are lower-case. All fields are required unless specified otherwise:</p>
+<dl class="field-list">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>The name of the module.</p></li>
+<li><p>Must be the same as the file name, without the <code class="docutils literal notranslate"><span class="pre">.py</span></code> extension.</p></li>
+</ul>
+</dd>
+<dt class="field-even">short_description<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>A short description which is displayed on the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/index.html#list-of-collections"><span class="std std-ref">Collection Index</span></a> page and <code class="docutils literal notranslate"><span class="pre">ansible-doc</span> <span class="pre">-l</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">short_description</span></code> is displayed by <code class="docutils literal notranslate"><span class="pre">ansible-doc</span> <span class="pre">-l</span></code> without any category grouping,
+so it needs enough detail to explain the module’s purpose without the context of the directory structure in which it lives.</p></li>
+<li><p>Unlike <code class="docutils literal notranslate"><span class="pre">description:</span></code>, <code class="docutils literal notranslate"><span class="pre">short_description</span></code> should not have a trailing period/full stop.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">description<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>A detailed description (generally two or more sentences).</p></li>
+<li><p>Must be written in full sentences, in other words, with capital letters and periods/full stops.</p></li>
+<li><p>Shouldn’t mention the module name.</p></li>
+<li><p>Make use of multiple entries rather than using one long paragraph.</p></li>
+<li><p>Don’t quote complete values unless it is required by YAML.</p></li>
+</ul>
+</dd>
+<dt class="field-even">version_added<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>The version of Ansible when the module was added.</p></li>
+<li><p>This is a string, and not a float, for example, <code class="docutils literal notranslate"><span class="pre">version_added:</span> <span class="pre">'2.1'</span></code>.</p></li>
+<li><p>In collections, this must be the collection version the module was added to, not the Ansible version. For example, <code class="docutils literal notranslate"><span class="pre">version_added:</span> <span class="pre">1.0.0</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">author<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Name of the module author in the form <code class="docutils literal notranslate"><span class="pre">First</span> <span class="pre">Last</span> <span class="pre">(@GitHubID)</span></code>.</p></li>
+<li><p>Use a multi-line list if there is more than one author.</p></li>
+<li><p>Don’t use quotes as it should not be required by YAML.</p></li>
+</ul>
+</dd>
+<dt class="field-even">deprecated<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>Marks modules that will be removed in future releases. See also <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/module_lifecycle.html#module-lifecycle"><span class="std std-ref">The lifecycle of an Ansible module or plugin</span></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">options<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Options are often called “parameters” or “arguments”. Because the documentation field is called <code class="docutils literal notranslate"><span class="pre">options</span></code>, we will use that term.</p></li>
+<li><p>If the module has no options (for example, it is a <code class="docutils literal notranslate"><span class="pre">_facts</span></code> module), all you need is one line: <code class="docutils literal notranslate"><span class="pre">options:</span> <span class="pre">{}</span></code>.</p></li>
+<li><p>If your module has options (in other words, accepts arguments), 
+each option should be documented thoroughly. For each module option, 
+include:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">option-name<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Declarative operation (not CRUD), to focus on the final state, for example <code class="docutils literal notranslate"><span class="pre">online:</span></code>, rather than <code class="docutils literal notranslate"><span class="pre">is_online:</span></code>.</p></li>
+<li><p>The name of the option should be consistent with the rest of the module, as well as other modules in the same category.</p></li>
+<li><p>When in doubt, look for other modules to find option names that 
+are used for the same purpose, we like to offer consistency to our 
+users.</p></li>
+<li><p>(There is no explicit field <code class="docutils literal notranslate"><span class="pre">option-name</span></code>. This entry is about the <em>key</em> of the option in the <code class="docutils literal notranslate"><span class="pre">options</span></code> dictionary.)</p></li>
+</ul>
+</dd>
+<dt class="field-even">description<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>Detailed explanation of what this option does. It should be written in full sentences.</p></li>
+<li><p>The first entry is a description of the option itself; subsequent
+ entries detail its use, dependencies, or format of possible values.</p></li>
+<li><p>Should not list the possible values (that’s what <code class="docutils literal notranslate"><span class="pre">choices:</span></code> is for, though it should explain what the values do if they aren’t obvious).</p></li>
+<li><p>If an option is only sometimes required, describe the conditions. For example, “Required when I(state=present).”</p></li>
+<li><p>Mutually exclusive options must be documented as the final sentence on each of the options.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">required<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Only needed if <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p></li>
+<li><p>If missing, we assume the option is not required.</p></li>
+</ul>
+</dd>
+<dt class="field-even">default<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">required</span></code> is false/missing, <code class="docutils literal notranslate"><span class="pre">default</span></code> may be specified (assumed ‘null’ if missing).</p></li>
+<li><p>Ensure that the default value in the docs matches the default value in the code.</p></li>
+<li><p>The default field must not be listed as part of the description, unless it requires additional information or conditions.</p></li>
+<li><p>If the option is a boolean value, you can use any of the boolean values recognized by Ansible
+(such as <code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code> or <code class="docutils literal notranslate"><span class="pre">yes</span></code>/<code class="docutils literal notranslate"><span class="pre">no</span></code>).  Document booleans as <code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code> for consistency and compatibility with ansible-lint.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">choices<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>List of option values.</p></li>
+<li><p>Should be absent if empty.</p></li>
+</ul>
+</dd>
+<dt class="field-even">type<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>Specifies the data type that option accepts, must match the <code class="docutils literal notranslate"><span class="pre">argspec</span></code>.</p></li>
+<li><p>If an argument is <code class="docutils literal notranslate"><span class="pre">type='bool'</span></code>, this field should be set to <code class="docutils literal notranslate"><span class="pre">type:</span> <span class="pre">bool</span></code> and no <code class="docutils literal notranslate"><span class="pre">choices</span></code> should be specified.</p></li>
+<li><p>If an argument is <code class="docutils literal notranslate"><span class="pre">type='list'</span></code>, <code class="docutils literal notranslate"><span class="pre">elements</span></code> should be specified.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">elements<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Specifies the data type for list elements in case <code class="docutils literal notranslate"><span class="pre">type='list'</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">aliases<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>List of optional name aliases.</p></li>
+<li><p>Generally not needed.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">version_added<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Only needed if this option was extended after initial Ansible release, in other words, this is greater than the top level <code class="docutils literal notranslate"><span class="pre">version_added</span></code> field.</p></li>
+<li><p>This is a string, and not a float, for example, <code class="docutils literal notranslate"><span class="pre">version_added:</span> <span class="pre">'2.3'</span></code>.</p></li>
+<li><p>In collections, this must be the collection version the option was added to, not the Ansible version. For example, <code class="docutils literal notranslate"><span class="pre">version_added:</span> <span class="pre">1.0.0</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">suboptions<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>If this option takes a dict or list of dicts, you can define the structure here.</p></li>
+<li><p>See <a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_securitygroup_module.html#ansible-collections-azure-azcollection-azure-rm-securitygroup-module"><span class="std std-ref">azure.azcollection.azure_rm_securitygroup</span></a>, <a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_azurefirewall_module.html#ansible-collections-azure-azcollection-azure-rm-azurefirewall-module"><span class="std std-ref">azure.azcollection.azure_rm_azurefirewall</span></a>, and <a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/openstack/cloud/baremetal_node_action_module.html#ansible-collections-openstack-cloud-baremetal-node-action-module"><span class="std std-ref">openstack.cloud.baremetal_node_action</span></a> for examples.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">requirements<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>List of requirements (if applicable).</p></li>
+<li><p>Include minimum versions.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">seealso<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p>A list of references to other modules, documentation or Internet resources</p></li>
+<li><p>In Ansible 2.10 and later, references to modules must use  the FQCN or <code class="docutils literal notranslate"><span class="pre">ansible.builtin</span></code> for modules in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.</p></li>
+<li><p>Plugin references are supported since ansible-core 2.15.</p></li>
+<li><p>A reference can be one of the following formats:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre id="codecell2"><span></span><span class="nt">seealso</span><span class="p">:</span>
+
+<span class="c1"># Reference by module name</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">module</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cisco.aci.aci_tenant</span>
+
+<span class="c1"># Reference by module name, including description</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">module</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cisco.aci.aci_tenant</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ACI module to create tenants on a Cisco ACI fabric.</span>
+
+<span class="c1"># Reference by plugin name</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">plugin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible.builtin.file</span>
+<span class="w">  </span><span class="nt">plugin_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lookup</span>
+
+<span class="c1"># Reference by plugin name, including description</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">plugin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible.builtin.file</span>
+<span class="w">  </span><span class="nt">plugin_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lookup</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">You can use the ansible.builtin.file lookup to read files on the control node.</span>
+
+<span class="c1"># Reference by rST documentation anchor</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ref</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aci_guide</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Detailed information on how to manage your ACI infrastructure using Ansible.</span>
+
+<span class="c1"># Reference by rST documentation anchor (with custom title)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ref</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The official Ansible ACI guide &lt;aci_guide&gt;</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Detailed information on how to manage your ACI infrastructure using Ansible.</span>
+
+<span class="c1"># Reference by Internet resource</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APIC Management Information Model reference</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Complete reference of the APIC object model.</span>
+<span class="w">  </span><span class="nt">link</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://developer.cisco.com/docs/apic-mim-ref/</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+</li>
+<li><p>If you use <code class="docutils literal notranslate"><span class="pre">ref:</span></code> to link to an anchor that is not associated with a title, you must add a title to the ref for the link to work correctly.</p></li>
+</ul>
+</dd>
+<dt class="field-even">attributes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>A dictionary mapping attribute names to dictionaries describing that attribute.</p></li>
+<li><p>Usually attributes are provided by documentation fragments, for example <code class="docutils literal notranslate"><span class="pre">ansible.builtin.action_common_attributes</span></code> and its sub-fragments.
+Modules and plugins use the appropriate docs fragments and fill in the <code class="docutils literal notranslate"><span class="pre">support</span></code>, <code class="docutils literal notranslate"><span class="pre">details</span></code>, and potential attribute-specific other fields.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">description<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>A string or a list of strings. Each string is one paragraph. The description is required.</p></li>
+<li><p>Explanation of what this attribute does. It should be written in full sentences.</p></li>
+</ul>
+</dd>
+<dt class="field-even">details<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>A string or a list of strings. Each string is one paragraph.</p></li>
+<li><p>Describes how support might not work as expected by the user.</p></li>
+<li><p>The details are optional in general, but must be provided if <code class="docutils literal notranslate"><span class="pre">support</span></code> is <code class="docutils literal notranslate"><span class="pre">partial</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">support<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>One of <code class="docutils literal notranslate"><span class="pre">full</span></code>, <code class="docutils literal notranslate"><span class="pre">none</span></code>, <code class="docutils literal notranslate"><span class="pre">partial</span></code>, or <code class="docutils literal notranslate"><span class="pre">N/A</span></code>. This is required.</p></li>
+<li><p>Indicates whether this attribute is supported by this module or plugin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">membership<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>A string or a list of strings.</p></li>
+<li><p>Must only be used for the attribute <code class="docutils literal notranslate"><span class="pre">action_group</span></code>, and must always be specified for that attribute.</p></li>
+<li><p>Lists the action groups this module or action is part of.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">platforms<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>A string or a list of strings.</p></li>
+<li><p>Must only be used for the attribute <code class="docutils literal notranslate"><span class="pre">platform</span></code>, and must always be specified for that attribute.</p></li>
+<li><p>Lists the platforms the module or action supports.</p></li>
+</ul>
+</dd>
+<dt class="field-even">version_added<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>Only needed if this attribute’s support was extended after the 
+module/plugin was created, in other words, this is greater than the top 
+level <code class="docutils literal notranslate"><span class="pre">version_added</span></code> field.</p></li>
+<li><p>This is a string, and not a float, for example, <code class="docutils literal notranslate"><span class="pre">version_added:</span> <span class="pre">'2.3'</span></code>.</p></li>
+<li><p>In collections, this must be the collection version the attribute’s support was added to, not the Ansible version. For example, <code class="docutils literal notranslate"><span class="pre">version_added:</span> <span class="pre">1.0.0</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">notes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Details of any important information that doesn’t fit in one of the above sections.</p></li>
+<li><p>Information on <code class="docutils literal notranslate"><span class="pre">check_mode</span></code> or <code class="docutils literal notranslate"><span class="pre">diff</span></code> should <strong>not</strong> be listed here, but instead be mentioned in the <code class="docutils literal notranslate"><span class="pre">attributes</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="linking-within-module-documentation">
+<span id="module-documents-linking"></span><h3>Linking within module documentation<a class="headerlink" href="#linking-within-module-documentation" title="Link to this heading"></a></h3>
+<p>You can link from your module documentation to other module docs, 
+other resources on docs.ansible.com, and resources elsewhere on the 
+internet with the help of some pre-defined macros. The correct formats 
+for these macros are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L()</span></code> for links with a heading. For example: <code class="docutils literal notranslate"><span class="pre">See</span> <span class="pre">L(Ansible</span> <span class="pre">Automation</span> <span class="pre">Platform,https://www.ansible.com/products/automation-platform).</span></code> As of Ansible 2.10, do not use <code class="docutils literal notranslate"><span class="pre">L()</span></code> for relative links between Ansible documentation and collection documentation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">U()</span></code> for URLs. For example: <code class="docutils literal notranslate"><span class="pre">See</span> <span class="pre">U(https://www.ansible.com/products/automation-platform)</span> <span class="pre">for</span> <span class="pre">an</span> <span class="pre">overview.</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">R()</span></code> for cross-references with a heading (added in Ansible 2.10). For example: <code class="docutils literal notranslate"><span class="pre">See</span> <span class="pre">R(Cisco</span> <span class="pre">IOS</span> <span class="pre">Platform</span> <span class="pre">Guide,ios_platform_options)</span></code>.  Use the RST anchor for the cross-reference. See <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/style_guide/index.html#adding-anchors-rst"><span class="std std-ref">Adding anchors</span></a> for details.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">M()</span></code> for module names. For example: <code class="docutils literal notranslate"><span class="pre">See</span> <span class="pre">also</span> <span class="pre">M(ansible.builtin.yum)</span> <span class="pre">or</span> <span class="pre">M(community.general.apt_rpm)</span></code>. A FQCN <strong>must</strong> be used, short names will create broken links; use <code class="docutils literal notranslate"><span class="pre">ansible.builtin</span></code> for modules in ansible-core.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">P()</span></code> for plugin names. For example: <code class="docutils literal notranslate"><span class="pre">See</span> <span class="pre">also</span> <span class="pre">P(ansible.builtin.file#lookup)</span> <span class="pre">or</span> <span class="pre">P(community.general.json_query#filter)</span></code>. This can also reference roles: <code class="docutils literal notranslate"><span class="pre">P(community.sops.install#role)</span></code>. This is supported since ansible-core 2.15. FQCNs must be used; use <code class="docutils literal notranslate"><span class="pre">ansible.builtin</span></code> for plugins in ansible-core.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For links between modules and documentation within a collection, you 
+can use any of the options above. For links outside of your collection, 
+use <code class="docutils literal notranslate"><span class="pre">R()</span></code> if available. Otherwise, use <code class="docutils literal notranslate"><span class="pre">U()</span></code> or <code class="docutils literal notranslate"><span class="pre">L()</span></code> with full URLs (not relative links). For modules, use <code class="docutils literal notranslate"><span class="pre">M()</span></code> with the FQCN or <code class="docutils literal notranslate"><span class="pre">ansible.builtin</span></code> as shown in the example. If you are creating your own documentation site, you will need to use the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html">intersphinx extension</a> to convert <code class="docutils literal notranslate"><span class="pre">R()</span></code> and <code class="docutils literal notranslate"><span class="pre">M()</span></code> to the correct links.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To refer to a group of modules in a collection, use <code class="docutils literal notranslate"><span class="pre">R()</span></code>.  When a collection is not the right granularity, use <code class="docutils literal notranslate"><span class="pre">C(..)</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Refer</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">R(kubernetes.core</span> <span class="pre">collection,</span> <span class="pre">plugins_in_kubernetes.core)</span> <span class="pre">for</span> <span class="pre">information</span> <span class="pre">on</span> <span class="pre">managing</span> <span class="pre">kubernetes</span> <span class="pre">clusters.</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">C(win_*)</span> <span class="pre">modules</span> <span class="pre">(spread</span> <span class="pre">across</span> <span class="pre">several</span> <span class="pre">collections)</span> <span class="pre">allow</span> <span class="pre">you</span> <span class="pre">to</span> <span class="pre">manage</span> <span class="pre">various</span> <span class="pre">aspects</span> <span class="pre">of</span> <span class="pre">windows</span> <span class="pre">hosts.</span></code></p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Because it stands out better, use <code class="docutils literal notranslate"><span class="pre">seealso</span></code> for general references over the use of notes or adding links to the description.</p>
+</div>
+</section>
+<section id="semantic-markup-within-module-documentation">
+<span id="semantic-markup"></span><h3>Semantic markup within module documentation<a class="headerlink" href="#semantic-markup-within-module-documentation" title="Link to this heading"></a></h3>
+<p>You can use semantic markup to highlight option names, option values,
+ and environment variables. The markup processor formats these 
+highlighted terms in a uniform way. With semantic markup, we can modify 
+how the output looks without changing underlying code.</p>
+<p>The correct formats for semantic markup are as follows:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">O()</span></code> for option names, whether mentioned alone or with values. For example: <code class="docutils literal notranslate"><span class="pre">Required</span> <span class="pre">if</span> <span class="pre">O(state=present).</span></code> and <code class="docutils literal notranslate"><span class="pre">Use</span> <span class="pre">with</span> <span class="pre">O(force)</span> <span class="pre">to</span> <span class="pre">require</span> <span class="pre">secure</span> <span class="pre">access.</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">V()</span></code> for option values when mentioned alone. For example: <code class="docutils literal notranslate"><span class="pre">Possible</span> <span class="pre">values</span> <span class="pre">include</span> <span class="pre">V(monospace)</span> <span class="pre">and</span> <span class="pre">V(pretty).</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RV()</span></code> for return value names, whether mentioned alone or with values. For example: <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">module</span> <span class="pre">returns</span> <span class="pre">RV(changed=true)</span> <span class="pre">in</span> <span class="pre">case</span> <span class="pre">of</span> <span class="pre">changes.</span></code> and <code class="docutils literal notranslate"><span class="pre">Use</span> <span class="pre">the</span> <span class="pre">RV(stdout)</span> <span class="pre">return</span> <span class="pre">value</span> <span class="pre">for</span> <span class="pre">standard</span> <span class="pre">output.</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">E()</span></code> for environment variables. For example: <code class="docutils literal notranslate"><span class="pre">If</span> <span class="pre">not</span> <span class="pre">set,</span> <span class="pre">the</span> <span class="pre">environment</span> <span class="pre">variable</span> <span class="pre">E(ACME_PASSWORD)</span> <span class="pre">will</span> <span class="pre">be</span> <span class="pre">used.</span></code></p></li>
+</ul>
+<p>The parameters for these formatting functions can use escaping with backslashes: <code class="docutils literal notranslate"><span class="pre">V(foo(bar="a\\b"\),</span> <span class="pre">baz)</span></code> results in the formatted value <code class="docutils literal notranslate"><span class="pre">foo(bar="a\b"),</span> <span class="pre">baz)</span></code>.</p>
+<p>Rules for using <code class="docutils literal notranslate"><span class="pre">O()</span></code> and <code class="docutils literal notranslate"><span class="pre">RV()</span></code>
+ are very strict. You must follow syntax rules so that documentation 
+renderers can create hyperlinks for the options and return values, 
+respectively.</p>
+<p>The allowed syntaxes are as follows:</p>
+<ul class="simple">
+<li><p>To reference an option for the current plugin/module, or the 
+entrypoint of the current role (inside role entrypoint documentation), 
+use <code class="docutils literal notranslate"><span class="pre">O(option)</span></code> and <code class="docutils literal notranslate"><span class="pre">O(option=name)</span></code>.</p></li>
+<li><p>To reference an option for another entrypoint <code class="docutils literal notranslate"><span class="pre">entrypoint</span></code> from inside role documentation, use <code class="docutils literal notranslate"><span class="pre">O(entrypoint:option)</span></code> and <code class="docutils literal notranslate"><span class="pre">O(entrypoint:option=name)</span></code>.
+ The entrypoint information can be ignored by the documentation 
+renderer, turned into a link to that entrypoint, or even directly to the
+ option of that entrypoint.</p></li>
+<li><p>To reference an option for <em>another</em> plugin/module <code class="docutils literal notranslate"><span class="pre">plugin.fqcn.name</span></code> of type <code class="docutils literal notranslate"><span class="pre">type</span></code>, use <code class="docutils literal notranslate"><span class="pre">O(plugin.fqcn.name#type:option)</span></code> and <code class="docutils literal notranslate"><span class="pre">O(plugin.fqcn.name#type:option=name)</span></code>. For modules, use <code class="docutils literal notranslate"><span class="pre">type=module</span></code>.
+ The FQCN and plugin type can be ignored by the documentation renderer, 
+turned into a link to that plugin, or even directly to the option of 
+that plugin.</p></li>
+<li><p>To reference an option for entrypoint <code class="docutils literal notranslate"><span class="pre">entrypoint</span></code> of <em>another</em> role <code class="docutils literal notranslate"><span class="pre">role.fqcn.name</span></code>, use <code class="docutils literal notranslate"><span class="pre">O(role.fqcn.name#role:entrypoint:option)</span></code> and <code class="docutils literal notranslate"><span class="pre">O(role.fqcn.name#role:entrypoint:option=name)</span></code>.
+ The FQCN and entrypoint information can be ignored by the documentation
+ renderer, turned into a link to that entrypoint, or even directly to 
+the option of that entrypoint.</p></li>
+<li><p>To reference options that do not exist (for example, options that were removed in an earlier version), use <code class="docutils literal notranslate"><span class="pre">O(ignore:option)</span></code> and <code class="docutils literal notranslate"><span class="pre">O(ignore:option=name)</span></code>. The <code class="docutils literal notranslate"><span class="pre">ignore:</span></code> part will not be shown to the user by documentation rendering.</p></li>
+</ul>
+<p>Option names can refer to suboptions by listing the path to the option separated by dots. For example, if you have an option <code class="docutils literal notranslate"><span class="pre">foo</span></code> with suboption <code class="docutils literal notranslate"><span class="pre">bar</span></code>, then you must use <code class="docutils literal notranslate"><span class="pre">O(foo.bar)</span></code> to reference that suboption. You can add array indications like <code class="docutils literal notranslate"><span class="pre">O(foo[].bar)</span></code> or even <code class="docutils literal notranslate"><span class="pre">O(foo[-1].bar)</span></code> to indicate specific list elements. Everything between <code class="docutils literal notranslate"><span class="pre">[</span></code> and <code class="docutils literal notranslate"><span class="pre">]</span></code> pairs will be ignored to determine the real name of the option. For example, <code class="docutils literal notranslate"><span class="pre">O(foo[foo</span> <span class="pre">|</span> <span class="pre">length</span> <span class="pre">-</span> <span class="pre">1].bar[])</span></code> results in the same link as <code class="docutils literal notranslate"><span class="pre">O(foo.bar)</span></code>, but the text <code class="docutils literal notranslate"><span class="pre">foo[foo</span> <span class="pre">|</span> <span class="pre">length</span> <span class="pre">-</span> <span class="pre">1].bar[]</span></code> displays instead of <code class="docutils literal notranslate"><span class="pre">foo.bar</span></code>.</p>
+<p>The same syntaxes can be used for <code class="docutils literal notranslate"><span class="pre">RV()</span></code>, except that these will refer to return value names instead of option names; for example <code class="docutils literal notranslate"><span class="pre">RV(ansible.builtin.service_facts#module:ansible_facts.services)</span></code> refers to the <code class="ansible-return-value docutils literal notranslate"><a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_facts_module.html#ansible-collections-ansible-builtin-service-facts-module-return-ansible-facts-services"><span class="std std-ref"><span class="pre">ansible_facts.services</span></span></a></code> fact returned by the <a class="reference internal" href="https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_facts_module.html#ansible-collections-ansible-builtin-service-facts-module"><span class="std std-ref">ansible.builtin.service_facts module</span></a>.</p>
+</section>
+<section id="format-macros-within-module-documentation">
+<h3>Format macros within module documentation<a class="headerlink" href="#format-macros-within-module-documentation" title="Link to this heading"></a></h3>
+<p>While it is possible to use standard Ansible formatting macros to 
+control the look of other terms in module documentation, you should do 
+so sparingly.</p>
+<p>Possible macros include the following:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">C()</span></code> for <code class="docutils literal notranslate"><span class="pre">monospace</span></code> (code) text. For example: <code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">module</span> <span class="pre">functions</span> <span class="pre">like</span> <span class="pre">the</span> <span class="pre">unix</span> <span class="pre">command</span> <span class="pre">C(foo).</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">B()</span></code> for bold text.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">I()</span></code> for italic text.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HORIZONTALLINE</span></code> for a horizontal rule (the <code class="docutils literal notranslate"><span class="pre">&lt;hr&gt;</span></code> html tag) to separate long descriptions.</p></li>
+</ul>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">C()</span></code>, <code class="docutils literal notranslate"><span class="pre">B()</span></code>, and <code class="docutils literal notranslate"><span class="pre">I()</span></code> do <strong>not allow escaping</strong>, and thus cannot contain the value <code class="docutils literal notranslate"><span class="pre">)</span></code> as it always ends the formatting sequence. If you need to use <code class="docutils literal notranslate"><span class="pre">)</span></code> inside <code class="docutils literal notranslate"><span class="pre">C()</span></code>, we recommend to use <code class="docutils literal notranslate"><span class="pre">V()</span></code> instead; see the above section on semantic markup.</p>
+</section>
+<section id="documentation-fragments">
+<span id="module-docs-fragments"></span><h3>Documentation fragments<a class="headerlink" href="#documentation-fragments" title="Link to this heading"></a></h3>
+<p>If you are writing multiple related modules, they may share common 
+documentation, such as authentication details, file mode settings, <code class="docutils literal notranslate"><span class="pre">notes:</span></code> or <code class="docutils literal notranslate"><span class="pre">seealso:</span></code> entries. Rather than duplicate that information in each module’s <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code>
+ block, you can save it once as a doc_fragment plugin and use it in each
+ module’s documentation. In Ansible, shared documentation fragments are 
+contained in a <code class="docutils literal notranslate"><span class="pre">ModuleDocFragment</span></code> class in <a class="reference external" href="https://github.com/ansible/ansible/tree/devel/lib/ansible/plugins/doc_fragments">lib/ansible/plugins/doc_fragments/</a> or the equivalent directory in a collection. To include a documentation fragment, add <code class="docutils literal notranslate"><span class="pre">extends_documentation_fragment:</span> <span class="pre">FRAGMENT_NAME</span></code> in your module documentation. Use the fully qualified collection name for the FRAGMENT_NAME (for example, <code class="docutils literal notranslate"><span class="pre">kubernetes.core.k8s_auth_options</span></code>).</p>
+<p>Modules should only use items from a doc fragment if the module will 
+implement all of the interface documented there in a manner that behaves
+ the same as the existing modules which import that fragment. The goal 
+is that items imported from the doc fragment will behave identically 
+when used in another module that imports the doc fragment.</p>
+<p>By default, only the <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code>
+ property from a doc fragment is inserted into the module documentation.
+ It is possible to define additional properties in the doc fragment in 
+order to import only certain parts of a doc fragment or mix and match as
+ appropriate. If a property is defined in both the doc fragment and the 
+module, the module value overrides the doc fragment.</p>
+<p>Here is an example doc fragment named <code class="docutils literal notranslate"><span class="pre">example_fragment.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre id="codecell3"><span></span><span class="k">class</span> <span class="nc">ModuleDocFragment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c1"># Standard documentation</span>
+    <span class="n">DOCUMENTATION</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'''</span>
+<span class="s1">    options:</span>
+<span class="s1">      # options here</span>
+<span class="s1">    '''</span>
+
+    <span class="c1"># Additional section</span>
+    <span class="n">OTHER</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'''</span>
+<span class="s1">    options:</span>
+<span class="s1">      # other options here</span>
+<span class="s1">    '''</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p>To insert the contents of <code class="docutils literal notranslate"><span class="pre">OTHER</span></code> in a module:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre id="codecell4"><span></span><span class="nt">extends_documentation_fragment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example_fragment.other</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p>Or use both :</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre id="codecell5"><span></span><span class="nt">extends_documentation_fragment</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example_fragment</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example_fragment.other</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell5">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.8.</span></p>
+</div>
+<p>Since Ansible 2.8, you can have user-supplied doc_fragments by using a <code class="docutils literal notranslate"><span class="pre">doc_fragments</span></code> directory adjacent to play or role, just like any other plugin.</p>
+<p>For example, all AWS modules should include:</p>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre id="codecell6"><span></span><span class="nt">extends_documentation_fragment</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ec2</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p><a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_collections_shared.html#docfragments-collections"><span class="std std-ref">Using documentation fragments in collections</span></a> describes how to incorporate documentation fragments in a collection.</p>
+</section>
+</section>
+<section id="examples-block">
+<span id="id3"></span><h2><a class="toc-backref" href="#id10" role="doc-backlink">EXAMPLES block</a><a class="headerlink" href="#examples-block" title="Link to this heading"></a></h2>
+<p>After the shebang, the UTF-8 coding, the copyright line, the license section, and the <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> block comes the <code class="docutils literal notranslate"><span class="pre">EXAMPLES</span></code>
+ block. Here you show users how your module works with real-world 
+examples in multi-line plain-text YAML format. The best examples are 
+ready for the user to copy and paste into a playbook. Review and update 
+your examples with every change to your module.</p>
+<p>Per playbook best practices, each example should include a <code class="docutils literal notranslate"><span class="pre">name:</span></code> line:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre id="codecell7"><span></span>EXAMPLES = r'''
+- name: Ensure foo is installed
+  namespace.collection.modulename:
+    name: foo
+    state: present
+'''
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell7">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">name:</span></code> line should be capitalized and not include a trailing dot.</p>
+<p>Use a fully qualified collection name (FQCN) as a part of the module’s name like in the example above. For modules in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>, use the <code class="docutils literal notranslate"><span class="pre">ansible.builtin.</span></code> identifier, for example <code class="docutils literal notranslate"><span class="pre">ansible.builtin.debug</span></code>.</p>
+<p>If your examples use boolean options, use yes/no values. Since the 
+documentation generates boolean values as yes/no, having the examples 
+use these values as well makes the module documentation more consistent.</p>
+<p>If your module returns facts that are often needed, an example of how to use them can be helpful.</p>
+</section>
+<section id="return-block">
+<span id="id4"></span><h2><a class="toc-backref" href="#id11" role="doc-backlink">RETURN block</a><a class="headerlink" href="#return-block" title="Link to this heading"></a></h2>
+<p>After the shebang, the UTF-8 coding, the copyright line, the license section, <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code> and <code class="docutils literal notranslate"><span class="pre">EXAMPLES</span></code> blocks comes the <code class="docutils literal notranslate"><span class="pre">RETURN</span></code> block. This section documents the information the module returns for use by other modules.</p>
+<p>If your module doesn’t return anything (apart from the standard returns), this section of your module should read: <code class="docutils literal notranslate"><span class="pre">RETURN</span> <span class="pre">=</span> <span class="pre">r'''</span> <span class="pre">#</span> <span class="pre">'''</span></code>
+Otherwise, for each value returned, provide the following fields. All fields are required unless specified otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">return name<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Name of the returned field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Detailed description of what this value represents. Capitalized and with trailing dot.</p>
+</dd>
+<dt class="field-even">returned<span class="colon">:</span></dt>
+<dd class="field-even"><p>When this value is returned, such as <code class="docutils literal notranslate"><span class="pre">always</span></code>, <code class="docutils literal notranslate"><span class="pre">changed</span></code> or <code class="docutils literal notranslate"><span class="pre">success</span></code>. This is a string and can contain any human-readable content.</p>
+</dd>
+<dt class="field-odd">type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Data type.</p>
+</dd>
+<dt class="field-even">elements<span class="colon">:</span></dt>
+<dd class="field-even"><p>If <code class="docutils literal notranslate"><span class="pre">type='list'</span></code>, specifies the data type of the list’s elements.</p>
+</dd>
+<dt class="field-odd">sample<span class="colon">:</span></dt>
+<dd class="field-odd"><p>One or more examples.</p>
+</dd>
+<dt class="field-even">version_added<span class="colon">:</span></dt>
+<dd class="field-even"><p>Only needed if this return was extended after initial Ansible release, in other words, this is greater than the top level <code class="docutils literal notranslate"><span class="pre">version_added</span></code> field.
+This is a string, and not a float, for example, <code class="docutils literal notranslate"><span class="pre">version_added:</span> <span class="pre">'2.3'</span></code>.</p>
+</dd>
+<dt class="field-odd">contains<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional. To describe nested return values, set <code class="docutils literal notranslate"><span class="pre">type:</span> <span class="pre">dict</span></code>, or <code class="docutils literal notranslate"><span class="pre">type:</span> <span class="pre">list</span></code>/<code class="docutils literal notranslate"><span class="pre">elements:</span> <span class="pre">dict</span></code>, or if you really have to, <code class="docutils literal notranslate"><span class="pre">type:</span> <span class="pre">complex</span></code>, and repeat the elements above for each sub-field.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Here are two example <code class="docutils literal notranslate"><span class="pre">RETURN</span></code> sections, one with three simple fields and one with a complex nested field:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre id="codecell8"><span></span>RETURN = r'''
+dest:
+    description: Destination file/path.
+    returned: success
+    type: str
+    sample: /path/to/file.txt
+src:
+    description: Source file used for the copy on the target machine.
+    returned: changed
+    type: str
+    sample: /home/httpd/.ansible/tmp/ansible-tmp-1423796390.97-147729857856000/source
+md5sum:
+    description: MD5 checksum of the file after running copy.
+    returned: when supported
+    type: str
+    sample: 2a5aeecc61dc98c4d780b14b330e3282
+'''
+
+RETURN = r'''
+packages:
+    description: Information about package requirements.
+    returned: success
+    type: dict
+    contains:
+        missing:
+            description: Packages that are missing from the system.
+            returned: success
+            type: list
+            elements: str
+            sample:
+                - libmysqlclient-dev
+                - libxml2-dev
+        badversion:
+            description: Packages that are installed but at bad versions.
+            returned: success
+            type: list
+            elements: dict
+            sample:
+                - package: libxml2-dev
+                  version: 2.9.4+dfsg1-2
+                  constraint: "&gt;= 3.0"
+'''
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+</section>
+<section id="python-imports">
+<span id="id5"></span><h2><a class="toc-backref" href="#id12" role="doc-backlink">Python imports</a><a class="headerlink" href="#python-imports" title="Link to this heading"></a></h2>
+<p>After the shebang, the UTF-8 coding, the copyright line, the license, and the sections for <code class="docutils literal notranslate"><span class="pre">DOCUMENTATION</span></code>, <code class="docutils literal notranslate"><span class="pre">EXAMPLES</span></code>, and <code class="docutils literal notranslate"><span class="pre">RETURN</span></code>, you can finally add the python imports. All modules must use Python imports in the form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre id="codecell9"><span></span><span class="kn">from</span> <span class="nn">module_utils.basic</span> <span class="kn">import</span> <span class="n">AnsibleModule</span>
+</pre><button class="copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#codecell9">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Copy to clipboard</title>
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+    </button></div>
+</div>
+<p>The use of “wildcard” imports such as <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">module_utils.basic</span> <span class="pre">import</span> <span class="pre">*</span></code> is no longer allowed.</p>
+</section>
+<section id="testing-module-documentation">
+<span id="dev-testing-module-documentation"></span><h2><a class="toc-backref" href="#id13" role="doc-backlink">Testing module documentation</a><a class="headerlink" href="#testing-module-documentation" title="Link to this heading"></a></h2>
+<p>To test Ansible documentation locally please <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/testing_documentation.html#testing-module-documentation"><span class="std std-ref">follow instruction</span></a>. To test documentation in collections, please see <a class="reference internal" href="https://docs.ansible.com/ansible/latest/dev_guide/developing_collections_documenting.html#build-collection-docsite"><span class="std std-ref">Build a docsite with antsibull-docs</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="https://docs.ansible.com/ansible/latest/dev_guide/debugging.html" class="btn btn-neutral float-left" title="Debugging modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="https://docs.ansible.com/ansible/latest/dev_guide/sidecar.html" class="btn btn-neutral float-right" title="Adjacent YAML documentation files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>© Copyright Ansible project contributors.
+      <span class="lastupdated">Last updated on Aug 29, 2024.
+      </span></p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+<!-- begin analytics -->
+<script>
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+      (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n = d.createElement(s),e = document.getElementsByTagName(s)[0];
+      n.id=i;n.src = 'https://js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/330046.js';
+      e.parentNode.insertBefore(n, e);
+      })(document, "script", "hs-analytics",300000);
+</script>
+<!-- end analytics -->
+<script>
+if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+  _satellite.pageBottom();
+}
+</script>
+
+
+<script>_satellite["_runScript1"](function(event, target, Promise) {
+if(void 0!==_sdi.util){var pageHeight=document.body.scrollHeight,viewportHeight=window.innerHeight,initialPercent=viewportHeight/pageHeight,maxInterval=0;initialPercent=initialPercent>1?100:Math.round(100*initialPercent);var maxScroll=Math.floor(initialPercent);window._sdi.util.setCookie("sat_ppv",maxScroll),window.onscroll=function(){var i=window.pageYOffset/(document.body.scrollHeight-window.innerHeight)*100;i>maxScroll&&(maxScroll=Math.floor(i)),window._sdi.util.setCookie("sat_ppv",maxScroll)}}
+});</script><script>_satellite["_runScript2"](function(event, target, Promise) {
+void 0!==_sdi.util&&(window._sdi=window._sdi||{},window._sdi.addEventHandler=window.addEventListener?function(e,t,i){e.addEventListener(t,i,!1)}:function(e,t,i){e.attachEvent("on"+t,i)},window._sdi.addEventHandler(window,"message",(function(e){var t={},i=0;(-1!==e.origin.indexOf("loop=1")||e.srcElement&&e.srcElement.playerOptions&&1==e.srcElement.playerOptions.loop)&&(i=1);var a=0;if(e.srcElement&&e.srcElement.playerOptions&&1==e.srcElement.playerOptions.autoplay&&(a=1),e.origin.match(/youtube\.com/)&&"undefined"!=typeof JSON&&!i&&!a){t=JSON.parse(e.data);var d=window._sdi.yt.videos;if("infoDelivery"==t.event){var o,n={};for(var s in t.info.videoData&&((n=d[o=t.info.videoData.video_id]||{}).info=t.info,n.id=t.id,d[o]=n),window._sdi.yt.videos){(c=window._sdi.yt.videos[s]).id==t.id&&(n=c)}var r=window._sdi.yt.sc||{};n.info&&(Math.abs(t.info.currentTime-n.info.currentTime)>1.5&&!0===r.track&&(r.s().Media.stop(n.info.videoData.title,n.info.currentTime),"paused"!=n.state&&r.s().Media.play(n.info.videoData.title,t.info.currentTime)),n.info.currentTime=t.info.currentTime),2==t.info.playerState&&(r.s().Media.stop(n.info.videoData.title,n.info.currentTime),n.state="paused"),1==t.info.playerState&&(n.started?!0===r.track&&r.s().Media.play(n.info.videoData.title,n.info.currentTime):(n.started=!0,!0===r.track&&(r.s().Media.open(n.info.videoData.title,n.info.duration,"youtube"),r.s().Media.play(n.info.videoData.title,n.info.currentTime))),n.state="playing"),3==t.info.playerState&&n.started&&(!0===r.track&&r.s().Media.stop(n.info.videoData.title,n.info.currentTime),n.state="paused"),0===t.info.playerState&&(!0===r.track&&(r.s().Media.stop(n.info.videoData.title,n.info.currentTime),r.s().Media.close(n.info.videoData.title)),n.state="completed")}else if("onStateChange"==t.event){for(var s in window._sdi.yt.videos){var c;(c=window._sdi.yt.videos[s]).id==t.id&&(n=c)}r=window._sdi.yt.sc||{};1==t.info&&(n.started?!0===r.track&&r.s().Media.play(n.info.videoData.title,n.info.currentTime):(n.started=!0,!0===r.track&&(r.s().Media.open(n.info.videoData.title,n.info.duration,"youtube"),"paused"!=n.state&&r.s().Media.play(n.info.videoData.title,t.info.currentTime))),n.state="playing"),2==t.info&&(!0===r.track&&r.s().Media.stop(n.info.videoData.title,n.info.currentTime),n.state="paused"),3==t.info&&n.started&&(!0===r.track&&r.s().Media.stop(n.info.videoData.title,n.info.currentTime),n.state="paused"),0===t.info&&(!0===r.track&&(r.s().Media.stop(n.info.videoData.title,n.info.currentTime),r.s().Media.close(n.info.videoData.title)),n.state="completed")}}})),window._sdi.loadScript=function(e,t){var i=document.createElement("script");i.type="text/javascript",t&&"function"==typeof t&&(i.readyState?i.onreadystatechange=function(){"loaded"!==i.readyState&&"complete"!==i.readyState||(i.onreadystatechange=null,t())}:i.onload=function(){t()}),i.src=e,document.getElementsByTagName("head")[0].appendChild(i)},window._sdi.yt={stages:{},players:{},sc:{track:!0,s:function(){return s_gi(_satellite.getVar("rsid"))}},init:function(){for(var e=document.getElementsByTagName("script"),t=!1,i=(window._sdi.yt.videos,0);i<e.length;i++){(e[i].src||"").match(/youtube\.com\/iframe_api/)&&(t=!0)}!1===t?window._sdi.loadScript("//www.youtube.com/iframe_api",(function(){window._sdi.yt.ready("api")})):window._sdi.yt.ready("api")},ready:function(e){window._sdi.yt.stages[e]=!0,window._sdi.yt.stages.dom&&window._sdi.yt.stages.api&&window._sdi.yt.checkIframes()},checkIframes:function(){var e=window._sdi.yt.videos,t=1e3,i=0;document.querySelectorAll('iframe[src*="youtube"]').forEach((function(a){if("true"!=a.dataset.sdiyt){if(-1!=a.src.indexOf("loop=1"))var d=null;else{var o;d=a.src.match(/h?t?t?p?s?\:?\/\/www\.youtube(-nocookie)?\.com\/embed\/([\w-]{11})(?:\?.*)?/)}if(d){o=d.length>2?d[2]:"",a.id||(a.id=o+i,i++);var n=!1;if(!a.src.match(/origin/)&&document.location.protocol,a.src.match(/enablejsapi=1/)||(a.src+=(a.src.indexOf("?")>-1?"&":"?")+"enablejsapi=1",n=!0),void 0!==_sdi.util&&n){var s=this.cloneNode(!0);s.src=a.src,s.id=a.id,this.replaceWith(s)}else"undefined"!=typeof YT&&void 0!==YT.get?(ready=!0,e[o]={},!YT.get(a.id)||void 0===YT.get(a.id).v&&void 0!==YT.get(a.id).v.videoId?(e[o].player=new YT.Player(a.id,{events:{onReady:function(){},onStateChange:function(){},videoId:a.id}}),"true"!==a.getAttribute("data-sdiyt")&&a.setAttribute("data-sdiyt","true")):"true"!==a.getAttribute("data-sdiyt")&&a.setAttribute("data-sdiyt","true")):t=100}}})),setTimeout((function(){window._sdi.yt.checkIframes()}),t)},videos:{}},void 0!==window._sdi&&void 0!==window._sdi.addEventHandler&&window._sdi.addEventHandler(window,"load",(function(){document.querySelectorAll('iframe[src*="youtube"]').length>=1?(window._sdi.yt.init(),window._sdi.yt.ready("dom")):window._sdi.ytinterval=setInterval((function(){document.querySelectorAll('iframe[src*="youtube"]').length>=1&&(window._sdi.yt.init(),window._sdi.yt.ready("dom"),clearInterval(window._sdi.ytinterval))}),500)})));
+});</script><script>_satellite["_runScript3"](function(event, target, Promise) {
+window._sdi=window._sdi||{},window._sdi.dtm=window._sdi.dtm||{},window._sdi.dtm.video=window._sdi.dtm.video||{},_sdi.dtm.video.wistia={sc:{track:!0,s:function(){if(_sdi.util.getVar("window.s_gi")){if(void 0!==_satellite.getVar("rsid"))return s_gi(_satellite.getVar("rsid"));_satellite.logger.log("WISTIA Tracking:No RSID for s.Media: Wistia Tracking",5)}}},vids:[],timesPolled:0,pollToBind:function(){_satellite.logger.log("WISTIA Tracking: Polling for remaing video binding"),_sdi.dtm.video.wistia.timesPolled<30&&setTimeout((function(){_sdi.dtm.video.wistia.timesPolled++,_sdi.dtm.video.wistia.bindEvents()}),1e3)},bindEvents:function(){ws=_sdi.dtm.video.wistia,sc=ws.sc,s=sc.s,poll=!1,s().Media.playerName="wistia",s().Media.autoTrack=!1;for(var i=0;i<_sdi.dtm.video.wistia.vids.length;i++){var e=_sdi.dtm.video.wistia.vids[i],d=e.name(),t=e.duration();""!=d?void 0===e.adobeAnalyicsTrackingApplied?(_satellite.logger.log("WISTIA Tracking: Binding liteners to Wistia video named: "+d),void 0!==s()&&void 0!==s().Media&&(!0===sc.track&&(_satellite.logger.log("WISTIA Tracking: the video opened: "+d),s().Media.open(d,t,"wistia")),e.bind("play",(function(){void 0!==s().Media.list[this.name()]&&"object"!=typeof s().Media.list[this.name()]&&(_satellite.logger.log("WISTIA Tracking: the video opened: "+this.name()),s().Media.open(this.name(),this.duration(),"wistia")),_satellite.logger.log("WISTIA Tracking: the video played: "+this.name()),s().Media.play(this.name(),this.time())})),e.bind("pause",(function(){_satellite.logger.log("WISTIA Tracking: the video stoped: "+this.name()),s().Media.stop(this.name(),this.time())})),e.bind("seek",(function(i){_satellite.logger.log("WISTIA Tracking: the video seeked to "+i),s().Media.stop(this.name(),this.time()),s().Media.play(this.name(),i)})),e.bind("end",(function(){_satellite.logger.log("WISTIA Tracking: the video ended: "+this.name()),s().Media.stop(this.name(),this.time()),s().Media.close(this.name())})),e.adobeAnalyicsTrackingApplied=!0)):_satellite.logger.log("WISTIA Tracking: Liteners already bound to Wistia video named: "+d):poll=!0}poll&&_sdi.dtm.video.wistia.timesPolled<30&&_sdi.dtm.video.wistia.pollToBind()},findVideos:function(){_satellite.logger.log("WISTIA Tracking: Looking for videos"),window._wq=window._wq||[],_wq.push({id:"_all",onReady:function(i){_satellite.logger.log("WISTIA Tracking: Found "+i.name()+" videos"),_sdi.dtm.video.wistia.vids.push(i),_sdi.dtm.video.wistia.bindEvents()}})},init:function(){void 0!==window.Wistia?(_sdi.dtm.video.wistia.findVideos(),_sdi.dtm.video.wistia.vids.length>0&&_sdi.dtm.video.wistia.bindEvents()):_satellite.logger.log("WISTIA Tracking: No API detected")}},_sdi.dtm.video.wistia.init();
+});</script><script>_satellite["_runScript4"](function(event, target, Promise) {
+function addDataMapFromActions(t,e){return e&&e.dataMap&&(t=new Map([...t,...e.dataMap])),t}function extractAnalyticAttributesFromEvent(t){const e=new Map;for(const a of t.composedPath().reverse())if(a.hasAttributes?.())for(const i of a.attributes){if(isAnalyticsEntry(i.name)){let t=lowercaseFirst(i.name.replace("data-analytics-",""));t=normalizeKey(t),setKeyValueToMap(e,t,i.value)}if("data-analytics-data-map"===i.name){const[a,n]=i.value.split(":")??[];if(a===t.type){const a=n.split(",");for(let[i,n]of a.map((t=>t.split("="))))n?e.set(i,n):e.set(i,t[i])}}}return e}function normalizeKey(t){return Object.prototype.hasOwnProperty.call(ATTRIBUTES__MAP,t)&&("region"!==t&&_satellite.logger.warn("Data analytics "+t+" attribute is incorrect. Please review the spec and fix."),t=ATTRIBUTES__MAP[t]),t}function setKeyValueToMap(t,e,a){return t.has(e)?t.set(e,`${t.get(e)}|${a}`):t.set(e,a),t}function mergeSourceToMapFromQueue(t,e,a,i){if(a&&i){const n=t.get(i);n&&(t.set(i,{...n,...e,attributes:new Map([...n.attributes,...e.attributes]),clicked:e.clicked||n.clicked}),t.delete(a))}}const EVENTS=Object.freeze({PFE_NAV_EXPAND:"pfe-navigation:expanded-item",PFE_NAV_COLLAPSE:"pfe-navigation:collapsed-item",PFE_ACCORDION_CHANGE:"pfe-accordion:change",PFE_TABS_SHOWN:"pfe-tabs:shown-tab",RH_TAB_EXPAND:"tab-expand"});class MessageEvent extends Event{constructor(t){super("message"),this.detail={...this.detail,...t}}}class AnalyticsManager extends EventTarget{constructor(){super(),this._actions=new Map,this._messageQueue=new Map,this._listners=new Set,this._eventListenerHandler=this.eventListenerHandler.bind(this),this.registerEventListener("click"),this.scanEventMaps()}scanEventMaps(){for(const t of document.querySelectorAll("[data-analytics-event-map]")){const[e]=t.getAttribute("data-analytics-event-map")?.split?.(":")??[];e&&this.registerEventListener(e)}}registerEventListener(t,e={},a=document){this._listners.has(t)||(a.addEventListener(t,this._eventListenerHandler),this._actions.set(t,e),this._listners.add(t))}eventListenerHandler(t){const e=findRootElement(t);if(!e)return;if(this._messageQueue.has(t.type))return;let a=new Map;a=addDataMapFromActions(a,this._actions.get(t.type)),a=new Map([...a,...extractAnalyticAttributesFromEvent(t)]),a=addAttributes(e,a),this._messageQueue.set(t.type,{type:t.type,tagName:t.target.tagName,attributes:a,rootElement:e,eventDetail:"object"==typeof t.detail&&null!==t.detail?t.detail:{},track:this._actions.get(t.type).track,clicked:"click"===t.type}),requestAnimationFrame((()=>{if(this._messageQueue.size>0){const e=new Map(this._messageQueue);this._messageQueue=new Map;for(const[t,a]of e){const[t,i]=a.attributes?.get?.("data-analytics-event-map")?.split(":")??[];mergeSourceToMapFromQueue(e,a,t,i)}for(const[a,i]of e){const a=t.type,n=this._actions?.get?.(t.type)?.merge;mergeSourceToMapFromQueue(e,i,a,n)}for(let[t,a]of e)this.dispatchEvent(new MessageEvent({...a,eventMapped:!0}))}}))}}const analyticsManager=new AnalyticsManager;analyticsManager.registerEventListener(EVENTS.PFE_NAV_EXPAND,{merge:"click",dataMap:new Map([["event","Mega Menu Expanded"]])}),analyticsManager.registerEventListener(EVENTS.PFE_NAV_COLLAPSE,{merge:"click",dataMap:new Map([["event","Mega Menu Collapsed"]]),track:!1});const tabActions={merge:"click",dataMap:new Map([["event","Tab Link Clicked"],["isTab",!0]])};analyticsManager.registerEventListener(EVENTS.PFE_ACCORDION_CHANGE,tabActions),analyticsManager.registerEventListener(EVENTS.PFE_TABS_SHOWN,tabActions),analyticsManager.addEventListener("message",(t=>{if(t instanceof MessageEvent){const{eventMapped:a}=t.detail;if(a){const{attributes:a,rootElement:i,track:n,clicked:s}=t.detail;if(!1===n||!1===s)return;var e=buildDataObject(i,a);e.event&&pushEvent(e)}}}));var dataLayerName="appEventData",reservedAttributes=["event"],downloadExtensions=["doc","docx","eps","epub","jpg","png","svg","xls","ppt","pptx","pdf","xlsx","tab","csv","zip","txt","vsd","vxd","xml","js","css","rar","exe","wma","mov","avi","wmv","mp3","wav","m4v"],addAttributes=function(t,e){let a=!1,i=[];if(("Tab Link Clicked"!==e.get("event")||!e.has("tabHref"))&&(isTab(t)||e.get("isTab"))){a=!0,e.set("event","Tab Link Clicked");let n=t.getAttribute("href")||getLinkText(t)||"";n=n.trim(),e.set("tabHref",n),i.push("isTab")}if(!e.has("isJavascript")&&isJavascript(t)&&(a=!0,e.set("isJavascript",!0),i.push("isJavascript")),e.has("isDownload")&&e.has("fileName")||!isDownload(t)||(a=!0,e.set("isDownload",!0).set("fileName",t.href.split("/").pop()),i.push("isDownload")),e.has("isCrossPropertyDomain")&&e.has("linkTypeName")||!isCrossPropertyDomain(t)||(a=!0,e.set("isCrossPropertyDomain",!0).set("linkTypeName","cross property link"),i.push("isCrossPropertyDomain")),e.has("isCta")&&e.has("linkTypeName")||!isCta(t)||(a=!0,e.set("isCta",!0).set("linkTypeName","cta link"),i.push("isCta")),!e.has("isFooter")&&isFooter(t)&&(a=!0,e.set("isFooter",!0),i.push("isFooter")),!e.has("isInternalCampaign")&&isInternalCampaign(t)&&(a=!0,e.set("isInternalCampaign",!0),i.push("isInternalCampaign")),!e.has("isPromoSection")&&isPromoSection(t)&&(a=!0,e.set("isPromoSection",!0),i.push("isPromoSection")),(!e.has("isSearchContainer")||void 0===!e.has("linkTypeName"))&&isSearchContainer(t)){a=!0;let n=parseInt(t.getAttribute("data-render-position")||0)+1;e.set("isSearchContainer",!0).set("linkTypeName","search result click").set("searchQuery",_sdi.util.getQueryParam("search")).set("searchResultNum",n),i.push("isSearchContainer")}return e.has("isGemini")&&e.has("geminiEvalId")&&e.has("geminiOfferId")||!isGemini(t)||(a=!0,e.set("isGemini",!0).set("geminiEvalId",t.getAttribute("data-rh-gemini-evaluation-id")).set("geminiOfferId",t.getAttribute("data-rh-gemini-offer-id")),i.push("isGemini")),e.has("isExitLink")&&e.has("linkTypeName")||!isExitLink(t)||(a=!0,e.set("isExitLink",!0).set("linkTypeName","exit link"),i.push("isExitLink")),e.has("isSocial")&&!e.has("linkTypeName")||!isSocial(t)||(a=!0,e.set("isSocial",!0).set("linkTypeName","social link"),i.push("isSocial")),e.set("targetHost",getHostName(t.href)).set("internalCampaign",window._sdi.util.getQueryParam("icid",t.href)||window._sdi.util.getQueryParam("intcmp",t.href)||""),!0===a&&(console.debug("Attributes are set via DOM parsing. Please use the analytics map to declare analytics data."),console.debug("Attributes set via DOM parsing:",i)),e},getLinkText=function(t){return redactEmail(t.getAttribute("data-analytics-text")||t.getAttribute("sObjectId")||t.getAttribute("s-object-id")||t.getAttribute("sObjectID")||t.getAttribute("data-s-object-id")||t.innerText&&""!==t.innerText.trim()&&t.innerText.trim()||t.textContent&&""!==t.textContent.trim()&&t.textContent.trim()||t.querySelector("[alt]")&&t.querySelector("[alt]").getAttribute("alt")||t.querySelector("[title]")&&t.querySelector("[title]").getAttribute("title")||t.getAttribute("aria-label")||t.href||"unknown")},getRegions=function(t,e){if(e=e||[],!t)return e;var a=t.closest("[data-analytics-region]");return a?(e.push(a.dataset.analyticsRegion),e=getRegions(a.parentElement,e)):e},removeReservedAttributes=function(t){return reservedAttributes.forEach((function(e){t.delete(e)})),t},attributesMapToArray=function(t){const e=[];return t.forEach(((t,a)=>e[a]=t)),e},redactEmail=function(t){return t.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}/gi,"email_address_redacted")},buildDataObject=function(t,e,a){return a=a||getRegions(t),{event:buildEventName(t,e,a),linkInfo:Object.assign({href:t.href,regions:a.constructor===Array?a.reverse().join("|"):a,text:getLinkText(t)},attributesMapToArray(removeReservedAttributes(e)))}},buildEventName=function(t,e){return e.has("event")?e.get("event"):"Master Link Clicked"},findRootElement=function(t){var e;if(Object.values([EVENTS.PFE_NAV_EXPAND,EVENTS.PFE_NAV_COLLAPSE,EVENTS.PFE_ACCORDION_CHANGE]).includes(t.type))e=t.detail.toggle;else if(t.type===EVENTS.PFE_TABS_SHOWN){const a=t.target.closest("pfe-content-set");if("PFE-CONTENT-SET"===t.target.tagName){const i=t.detail.tab.querySelector("slot");e=a.getSlot(i.getAttribute("name"))[0]}}else"PFE-TAB"===t.target.tagName||"RH-TAB"===t.target.tagName?e=t.target:"click"===t.type&&"PFE-CONTENT-SET"===t.target.tagName?e=t.target.shadowRoot.activeElement:void 0!==t.target&&(e=t.target.closest('a, button, [data-analytics-event], [role="button"]'));return e||t.composedPath().find((t=>"A"===t.tagName||"BUTTON"===t.tagName||"function"==typeof t.hasAttribute&&t.hasAttribute("data-analytics-event")))},isJavascript=function(t){return new RegExp("^javascript:","i").test(t.href)},isDownload=function(t){return new RegExp("("+downloadExtensions.join("|")+")$","i").test(t.href)},isExitLink=function(t){return!!t.href&&!new RegExp(_satellite.getVar("exitExclusionArray").join("|"),"i").test(t.href)},isSocial=function(t){var e=new RegExp(_satellite.getVar("socialDomainList").join("$|")+"$","i"),a=getHostName(t.href);return e.test(a)},isCrossPropertyDomain=function(t){return document.location.hostname!==getHostName(t.href)&&"access.cdn.redhat.com"!==getHostName(t.href)&&new RegExp(_satellite.getVar("redHatDomains").join("|"),"i").test(getHostName(t.href))},isCta=function(t){var e=["pfe-cta a",".cta-primary",".account-register-link","a.rh-cta-link","p.cta-group a","[data-ux-cta-type*='video-play']","div.ux-cta a.ux-cta-link:not([data-ux-cta-type*='video-play'])","a.rh-promo-cta-link","[data-rh-cta-type='primary']","[data-ux-cta-type='primary']","rh-cta a"];for(let a=0;a<e.length;a++)if(t.matches(e[a])||null!==t.closest(e[a]))return!0},isTab=function(t){return t.classList.contains('[data-toggle="tab"]')||t.classList.contains("pfe-accordion-header")||t.classList.contains('[role="tab"]')||t.classList.contains("ux-vtab-nav-link")||t.classList.contains("ux-tile-nav-link")||t.classList.contains("btn-brick")||t.classList.contains("ux-htab-nav-link")||t.classList.contains("ux-horizontal-tab-nav-link")||t.classList.contains("ux-oss-hub-filter-type-text")||t.classList.contains("ux-htabb-nav-link")||"tab"===t.getAttribute("data-toggle")||"PFE-ACCORDION-HEADER"===t.tagName||"tab"===t.getAttribute("role")||"RH-TAB"===t.tagName},isFooter=function(t){let e=t.closest("footer");return void 0!==e&&null!=e},isInternalCampaign=function(t){let e;return(""!=window._sdi.util.getQueryParam("icid",t.href)||""!=window._sdi.util.getQueryParam("intcmp",t.href))&&(e=t.getAttribute("role")||"",_satellite.logger.log("isInternalCampaign: linkRole:",e),"tab"!==e||void 0)},isPromoSection=function(t){let e=t.closest("div.band-hero");return void 0!==e&&null!=e},isSearchContainer=function(t){_satellite.logger.log("isSearchContainer ran");let e=t.closest("div.cp-sidebar")||t.closest("div.cp-search-results")||t.closest("div.rhdc-search-listing--content a");return _satellite.logger.log("isSearchContainer el",e),_satellite.logger.log("isSearchContainer return",void 0!==e&&null!=e),void 0!==e&&null!=e},isGemini=function(t){var e=["div.ux-cta a[data-rh-gemini-evaluation-id].ux-cta-link","div.rc-cta-primary a[data-rh-gemini-evaluation-id].ux-cta-link"];for(let a=0;a<e.length;a++)if(t.matches(e[a]))return!0},getHostName=function(t){let e=document.createElement("a");return e.href=t,e.hostname},pushEvent=function(t){window.appEventData=window.appEventData||[],console.info("Pushing to the dataLayer",t);var e=window[dataLayerName];Array.isArray(e)&&e.push(t)};const isAnalyticsEntry=t=>t.startsWith("data-analytics-"),lowercaseFirst=t=>`${t.charAt(0).toLowerCase()}${t.slice(1)}`,ATTRIBUTES__MAP={filename:"fileName",internalcampaign:"internalCampaign",isdownload:"isDownload",iscrosspropertydomain:"isCrossPropertyDomain",istab:"isTab",linktype:"linkType",linktypename:"linkTypeName",region:"regions"};
+});</script><script>_satellite["_runScript5"](function(event, target, Promise) {
+void 0!==_sdi.util.loadScript&&_sdi.util.loadScript("https://www.googletagmanager.com/gtag/js?id=DC-10727170",(function(){window.dataLayer=window.dataLayer||[],window.gtag=function(){dataLayer.push(arguments)},gtag("js",new Date),gtag("config","DC-10727170"),gtag("config","AW-991646916"),gtag("event","conversion",{allow_custom_scripts:!0,u1:window.location.hostname+window.location.pathname,send_to:"DC-10727170/unive0/redha0+standard"})}));
+});</script><iframe height="0" width="0" style="display: none; visibility: hidden;" src="Module%20format%20and%20documentation%20%E2%80%94%20Ansible%20Community%20Documentation-Dateien/activityi.html"></iframe><script>_satellite["_runScript6"](function(event, target, Promise) {
+if("yes"==_satellite.getVar("tagsAllowedFunc")&&"yes"==_satellite.getVar("rhMarketingLoaded")){var scCid=_satellite.cookie.get("rh_omni_tc");if(""!==scCid&&void 0!==scCid)for(var updatedLink="",anchors=window.document.getElementsByTagName("a"),i=0;i<anchors.length;i++)(anchors[i].href.indexOf("vts.inxpo.com")>-1||anchors[i].href.indexOf("onlinexperiences.com")>-1)&&-1==anchors[i].href.toLowerCase().indexOf("affiliatedata=")&&""!==(updatedLink=window._sdi.util.appendQuery(anchors[i].href,"AffiliateData",scCid))&&(anchors[i].href=updatedLink)}
+});</script><div class="st-injected-content-generated st-install-yABGvz2N8PwcwBxyfzUc" data-st-install-key="yABGvz2N8PwcwBxyfzUc" id="st-injected-content">
+<div class="st-ui-embed st-search-chrome-overlay-output st-search-escape-hide-outputs st-search-zoom-on-mobile" style="display: none;">
+  
+    <div class="st-ui-overlay st-search-hide-outputs"></div>
+  
+  <!-- Swiftype input and results overlay -->
+  
+  <div class="st-ui-container st-ui-container-overlay  st-ui-injected-overlay-container ">
+    <!-- HEADER -->
+    <div class="st-ui-container-header_bar st-position-container">
+      
+        <section class="st-ui-header">
+          <form>
+            <input class="st-default-search-input st-search-set-focus" type="text" placeholder="Search this site" aria-label="Search this site" id="st-overlay-search-input" autocomplete="off" autocorrect="off" autocapitalize="none">
+          </form>
+          <span class="st-ui-search-icon"></span>
+
+          
+            <a class="st-ui-close-button st-search-hide-outputs">Close</a>
+          
+
+          
+        </section>
+      
+    </div>
+
+    <!-- LEFT SIDEBAR -->
+    <div class="st-ui-container-left_sidebar st-position-container">
+      
+      <div class="st-ui-injected-search-controls">
+        
+          
+        
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="st-ui-container-right_sidebar st-position-container">
+      
+      <div class="st-ui-injected-container-right_sidebar">
+        <div class="st-ui-injected-search-controls">
+          
+            
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIMARY CONTENT -->
+    <div class="st-ui-container-primary_content st-position-container">
+      
+        <section class="st-ui-slide-autocomplete st-autocomplete-keyboard-navigable st-autocomplete-transient-on-select-and-results" data-st-target-element="#st-overlay-search-input" data-st-active-query-class="active" style="display: none;">
+          <span class="st-ui-type-heading-small">suggested results</span>
+          <div class="st-autocomplete-results"><div class="st-query-present" style="display: none;"></div></div>
+        </section>
+
+        <section class="st-ui-content st-search-results"><div class="st-query-not-present">
+          <span class="st-ui-fallback"></span>
+        </div><div class="st-query-present" style="display: none;"></div></section>
+      
+
+      <section class="st-ui-no-results st-search-suggestions"><div class="st-query-not-present">
+      </div></section>
+    </div>
+
+
+
+    <!-- FOOTER -->
+    <div class="st-ui-container-footer_bar st-position-container">
+      <section class="st-ui-footer">
+        
+          <span class="st-ui-search-summary st-search-summary" aria-live="polite"></span>
+        
+        <span class="st-ui-pagination st-search-pagination"></span>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="st-default-autocomplete" data-st-target-element=".st-default-search-input" style="display: none; position: absolute; top: 49px; left: 0px; z-index: 999999;">
+  <div class="st-autocomplete-results st-ui-autocomplete"><div class="st-query-present" style="display: none;"></div></div>
+</div>
+<a class="st-search-show-outputs st-ui-search-tab">Search this site</a></div></body></html>
