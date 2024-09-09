@@ -3,6 +3,7 @@
 
 # Copyright: (c) 2024, Sören Schmidt <soeren.schmidt@suse.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -71,6 +72,7 @@ message:
     sample: 'goodbye'
 '''
 import collections
+import json
 import os
 import subprocess
 from typing import List, Dict, Tuple, Any
@@ -188,21 +190,22 @@ def set_apply(existing_notes: List[str],
     (how "applied Notes" should look like) and the effective
     Solution (what "applied Solution" should list) as well as
     the commands to achieve it.
-    If the effective Notes and the Solution does not differ
-    from the current ones, an empty command list is returned,
-    except `force_reapply` is set.
-    If there is a difference the commands get retunred
     
-    PRECEDING REVERT ALL IS CURRENTLY MISSING
+    If the calculated Notes and Solution does not differ
+    from the current ones, an empty command list is returned
+    since nothing needs to be done.
     
-    Calls module.fail_json() in case of an error.
+    If there is a difference or `force_reapply` is set, the 
+    calculated commands are returned.
+
+    In case of an error module.fail_json() gets called.
     
-    Impotant:
-    No optimizations are done do remove unnecessary applies or reverts.
-    The code become to complex to calulate saptune behavior. It is 
-    too risky to introduce bugs just because some users might create
-    "interresting" apply lists. Also changes in saptune requires  
-    adaptation here and in the worst case introduces version switches.
+    Important:
+    No optimizations are done to remove unnecessary applies or reverts.
+    Some users may create "interesting" apply lists, but adding complex
+    code to mimic saptune behavior for such rare events is too risky. 
+    It can introduce bugs and requires adaptation if saptune changes 
+    its behavior. In the worst case a version switch might become necessary.
        
     Nevertheless we track Note apply and removal to calculate the 
     effective Note list as well we check if all Notes of a Solution
@@ -211,7 +214,7 @@ def set_apply(existing_notes: List[str],
     
     effective_notes = OrderedSet()
     effective_solution = None
-    commands = [['saptune', 'revert', 'all']] if force_reapply else []
+    commands = [['saptune', 'revert', 'all']]
     effective_solution_notes = None
  
     # Walk through the apply list.
@@ -260,16 +263,15 @@ def set_apply(existing_notes: List[str],
                 effective_solution_notes = None
                 
     # If our calculated configuration is already applied, then no
-    # commands need to be executed except force_reapply is set.      
+    # commands need to be executed except force_reapply is set.
     if not force_reapply:
         if effective_solution == current_applied_solution and current_applied_notes == list(effective_notes):
             return []   
-
+        
     return commands
 
 def execute(command: List[str]) -> str:
-    """Executes the given command and returns the output
-    # (stdout and stderr combined).
+    """Executes the given command and returns the output (stdout and stderr combined).
     Calls module.fail_json() in case of an error."""
 
     output = []
@@ -310,11 +312,105 @@ def run_module():
         message=''              # IS THIS REQUIRED????
     )
 
-    # Instanciate the Ansible module.
+    # Instantiate the Ansible module.
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True
     )
+
+    # The command list to get saptune to the desired state.
+    command_list = []
+
+    # Call status to collect the current settings.
+    status = get_status(compliance_check=False)
+
+    # Set staging.
+    command_list.extend(set_staging(module.params['staging_enabled'], 
+                                    status['staging']['staging enabled']))
+
+    # Take care of tuneD. 
+    if module.params['no_tuned']:
+        if status['services']['tuned']: # empty list, if not installed.
+            for is_value, should_value in [(status['services']['tuned'][0], 'disabled'), 
+                                            (status['services']['tuned'][1], 'inactive')]:
+                command_list.extend(set_service('tuned.service', is_value, should_value))
+    
+    # Take care of sapconf. 
+    if module.params['no_sapconf']:
+        if status['services']['sapconf']: # empty list, if not installed.
+            for is_value, should_value in [(status['services']['sapconf'][0], 'disabled'), 
+                                            (status['services']['sapconf'][1], 'inactive')]:
+                command_list.extend(set_service('sapconf.service', is_value, should_value))
+        
+    # Take care of saptune.service (in regards to enable/disable only).
+    should_value = 'enabled' if  module.params['enabled'] else 'disabled'   
+    command_list.extend(set_service('saptune.service', 
+                                    status['services']['saptune'][0], 
+                                    should_value))
+
+           
+    # If keep_applied_if_stopped is set to true, we need to
+    # stop saptune.service now if this is the desired state,
+    # otherwise stopping it later would remove the tuning.
+    saptune_stop_handled = False
+    if module.params['keep_applied_if_stopped']:
+        if not module.params['started']:
+            command_list.extend(set_service('saptune.service', 
+                                           status['services']['saptune'][1], 
+                                           'inactive'))
+            saptune_stop_handled = True
+        
+    # Generate the commands depending on the apply list.
+    existing_notes, existing_solutions, solution_map = get_notes_and_solutions()
+    applied_solution = status['Solution applied'][0] if status['Solution applied'] else None
+    command_list.extend(set_apply(existing_notes,
+                                  existing_solutions,
+                                  solution_map,
+                                  module.params['apply'],
+                                  status['Notes applied'],
+                                  applied_solution,
+                                  force_reapply=module.params['force_reapply'])) 
+    
+    # Handle saptune.servie start/stop if not done earlier.
+    if not saptune_stop_handled:
+        should_value = 'active' if  module.params['started'] else 'inactive'   
+        command_list.extend(set_service('saptune.service', 
+                                        status['services']['saptune'][1], 
+                                        should_value))
+        
+    # Depending on check_mode we return the commands or execute them.
+    # if check_mode --> return command list and exit here!
+    for command in command_list:
+        print(' '.join(command))
+    #TODO:   output = execute(command)   # WHAT TO DO WITH THE OUTPUT?
+    
+    
+    
+
+    # Calling status again and do final checks.
+    if not module.params['ignore_non_compliant'] or not module.params['ignore_degraded']:
+
+        # Get status again, if commands had been executed.
+        if command_list:
+            status = get_status(compliance_check=True)
+                
+        # A non compliant tuning is considered an error.
+        if not module.params['ignore_non_compliant']:
+            if status['tuning state'] == 'not compliant':
+                module.fail_json(msg='Tuning is non-compliant!')
+        
+        # A degraded systemd system state is considered an error.
+        if not module.params['ignore_degraded']:
+            if status['systemd system state'] == 'degraded':
+                module.fail_json(msg='Systemd system state is degraded!')
+
+
+
+
+
+
+
+
 
 
 
