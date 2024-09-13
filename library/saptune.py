@@ -71,6 +71,7 @@ message:
     returned: always
     sample: 'goodbye'
 '''
+
 import collections
 import json
 import os
@@ -112,6 +113,27 @@ class OrderedSet():
     def __str__(self):
         return f'''{{{', '.join([repr(x) for x in self.ordered_set.keys()])}}}'''
 
+def execute(command: List[str]) -> None:
+    """Executes the given command.
+    Calls module.fail_json() in case of an error."""
+
+    try:
+        with subprocess.Popen(command,
+                              stdout = subprocess.PIPE, 
+                              stderr = subprocess.PIPE
+                             ) as proc:
+            stdout = proc.stdout.readlines()
+            stderr = proc.stderr.readlines()
+            result['stdout'] = '\n'.join([line.strip().decode('utf-8') for line in stdout])
+            result['stdout_lines'] = stdout
+            result['stderr'] = '\n'.join([line.strip().decode('utf-8') for line in stderr])
+            result['stderr_lines'] = stderr
+            result['rc'] = proc.returncode
+        if proc.returncode != 0:
+            module.fail_json(msg=f'''Execution of \'{' '.join(command)}\' failed!''', **result)             
+    except Exception as err:
+        module.fail_json(msg=f'''Error executing \'{' '.join(command)}\': {err}''', **result)          
+    return
 
 def get_notes_and_solutions() -> (List[str], List[str], Dict[str, List[str]]):
     """Calls 'saptune note list' and 'saptune solution list'
@@ -121,12 +143,12 @@ def get_notes_and_solutions() -> (List[str], List[str], Dict[str, List[str]]):
 
     result = json.loads(execute(['saptune', '--format', 'json', 'note', 'list']))
     if result['exit code'] != 0:
-        module.fail_json(msg='Could not retrieve Note list!') 
+        module.fail_json(msg='Could not retrieve Note list!', **result)
     existing_notes = [e['Note ID'] for e in result['result']['Notes available']]
 
     result = json.loads(execute(['saptune', '--format', 'json', 'solution', 'list']))
     if result['exit code'] != 0:
-        module.fail_json(msg='Could not retrieve Solution list!')
+        module.fail_json(msg='Could not retrieve Solution list!', **result)
     existing_solutions = [e['Solution ID'] for e in result['result']['Solutions available']]
     solution_map = {e['Solution ID']: e['Note list'] for e in result['result']['Solutions available']}
 
@@ -139,15 +161,15 @@ def get_status(compliance_check=True) -> Dict[str, Any]:
     command = ['saptune', '--format', 'json', 'status']
     if not compliance_check:
         command.append('--non-compliance-check')
-    output = execute(command)
+    output = execute(command)   #TODO: WE NEED TO TELL EXECUTE TO IGNORE THE EXIT CODE IN THIS CASE!!
     try: 
-        result = json.loads(output)
+        json_output = json.loads(output)
     except json.decoder.JSONDecodeError:
-        module.fail_json(msg='No or broken JSON output of "saptune --format json status". Is saptune version to old (<3.1) or does not run as root?')
-    if not result['result']:
-        module.fail_json(msg='"saptune --format json status" returned an empty result!')
+        module.fail_json(msg='No or broken JSON output of \'saptune --format json status\'. Is saptune version to old (<3.1) or does not run as root?', **result)
+    if not json_output['result']:
+        module.fail_json(msg='\'saptune --format json status\' returned an empty result!', **result)
     
-    return result['result']
+    return json_output['result']
  
 def set_staging(is_value: bool, should_value: bool) -> List[List[str]]:
     """Returns the commands to set the staging to the desired state."""
@@ -223,7 +245,7 @@ def set_apply(existing_notes: List[str],
 
         # A Solution may not have a minus operator.
         if entry[0:2] == '-@':
-            module.fail_json(msg=f'Solutions cannot have a minus operator: "{entry}"')
+            module.fail_json(msg=f'Solutions cannot have a minus operator: \'{entry}\'', **result)
         
         # Set operator and remove it from entry.
         if entry[0] == '-':
@@ -236,16 +258,16 @@ def set_apply(existing_notes: List[str],
         if entry[0] == '@':    # Solution
             entry = entry[1:]
             if entry not in existing_solutions:
-                module.fail_json(msg=f'Solution "{entry}" is unknown!"')
+                module.fail_json(msg=f'Solution \'{entry}\' is unknown!', **result)
             if effective_solution:
-                module.fail_json(msg=f'Only one Solution is allowed!')
+                module.fail_json(msg=f'Only one Solution is allowed!', **result)
             effective_solution = entry
             effective_solution_notes = OrderedSet(solution_map[entry]) 
             effective_notes.update(effective_solution_notes)
             commands.append(['saptune', 'solution', 'apply', entry])
         else:   # Note
             if entry not in existing_notes:
-                module.fail_json(msg=f'Note "{entry}" is unknown!"')
+                module.fail_json(msg=f'Note \'{entry}\' is unknown!', **result)
             if operator == '+':
                 if entry not in effective_notes: 
                     effective_notes.add(entry)
@@ -270,26 +292,11 @@ def set_apply(existing_notes: List[str],
         
     return commands
 
-def execute(command: List[str]) -> str:
-    """Executes the given command and returns the output (stdout and stderr combined).
-    Calls module.fail_json() in case of an error."""
-
-    output = []
-    result = None
-    try:
-        with subprocess.Popen(command,
-                              stdout = subprocess.PIPE, 
-                              stderr = subprocess.PIPE
-                             ) as proc:
-            for line in proc.stdout.readlines():
-                output.append((line.strip().decode('utf-8')))
-            
-    except Exception as err:
-        module.fail_json(msg=err)
-       
-    return '\n'.join(output)
-
 def run_module():
+    
+    # We need those objects in all functions.
+    global module
+    global result
     
     # Define module arguments/parameters.
     module_args = dict(
@@ -307,9 +314,9 @@ def run_module():
 
     # Start to build up the result object.
     result = dict(
-        changed=False,
-        original_message='',    # IS THIS REQUIRED????
-        message=''              # IS THIS REQUIRED????
+        changed = False,
+        rc = None,
+        commands = []
     )
 
     # Instantiate the Ansible module.
@@ -347,8 +354,7 @@ def run_module():
     command_list.extend(set_service('saptune.service', 
                                     status['services']['saptune'][0], 
                                     should_value))
-
-           
+       
     # If keep_applied_if_stopped is set to true, we need to
     # stop saptune.service now if this is the desired state,
     # otherwise stopping it later would remove the tuning.
@@ -369,23 +375,33 @@ def run_module():
                                   module.params['apply'],
                                   status['Notes applied'],
                                   applied_solution,
-                                  force_reapply=module.params['force_reapply'])) 
+                                  force_reapply=module.params['force_reapply']))
+    result['commands'] = [' '.join(command) for command in command_list]
     
-    # Handle saptune.servie start/stop if not done earlier.
+    # Handle saptune.service start/stop if not done earlier.
     if not saptune_stop_handled:
         should_value = 'active' if  module.params['started'] else 'inactive'   
         command_list.extend(set_service('saptune.service', 
                                         status['services']['saptune'][1], 
                                         should_value))
         
-    # Depending on check_mode we return the commands or execute them.
-    # if check_mode --> return command list and exit here!
-    for command in command_list:
-        print(' '.join(command))
-    #TODO:   output = execute(command)   # WHAT TO DO WITH THE OUTPUT?
-    
-    
-    
+    # With check_mode we just return the commands.
+    #module.check_mode = True
+    if module.check_mode:
+        result['msg'] = 'Do nothing because check_mode is set.'
+        module.exit_json(**result)
+        
+    # If we have something to execute, we do.
+    if command_list:
+        for command in command_list:
+            execute(command)    # TODO: OUTPUT HANDLING
+        result['changed'] = True
+    else:
+        result['msg'] = 'Nothing to do.'
+        module.exit_json(**result)
+        
+
+
 
     # Calling status again and do final checks.
     if not module.params['ignore_non_compliant'] or not module.params['ignore_degraded']:
@@ -397,48 +413,19 @@ def run_module():
         # A non compliant tuning is considered an error.
         if not module.params['ignore_non_compliant']:
             if status['tuning state'] == 'not compliant':
-                module.fail_json(msg='Tuning is non-compliant!')
+                module.fail_json(msg='Tuning is non-compliant!', **result)
         
         # A degraded systemd system state is considered an error.
         if not module.params['ignore_degraded']:
             if status['systemd system state'] == 'degraded':
-                module.fail_json(msg='Systemd system state is degraded!')
+                module.fail_json(msg='Systemd system state is degraded!', **result)
 
 
 
 
 
 
-
-
-
-
-
-
-
-    # if the user is working with this module in only check mode we do not
-    # want to make any changes to the environment, just return the current
-    # state with no modifications
-    if module.check_mode:
-        module.exit_json(**result)
-
-    # manipulate or modify the state as needed (this is going to be the
-    # part where your module will do what it needs to do)
-    result['original_message'] = module.params['apply']
-    result['message'] = 'goodbye'
-
-    # use whatever logic you need to determine whether or not this module
-    # made any modifications to your target
-    if module.params['apply']:
-        result['changed'] = True
         
-    print(module.params['force_reapply'])
-
-    # during the execution of the module, if there is an exception or a
-    # conditional state that effectively causes a failure, run
-    # AnsibleModule.fail_json() to pass in the message and the result
-    if module.params['apply'] == 'fail me':
-        module.fail_json(msg='You requested this to fail', **result)
 
     # in the event of a successful module execution, you will want to
     # simple AnsibleModule.exit_json(), passing the key/value results
