@@ -11,33 +11,96 @@ DOCUMENTATION = r'''
 ---
 module: saptune
 
-short_description: Handles saptune.
+short_description: Configures saptune
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.0.0"
 
-description: This is my longer description explaining my test module.
-             mention check_mode support
+description: 
+        The module will configure C(saptune). It handles applying Notes and Solution,
+        configuring C(saptune.service), disableing C(tuned.service) and C(sapconf.service)
+        and enabling/disabling of staging.
 
 options:
-    name:
-        description: This is the message to send to the test module.
-        required: true
-        type: str
-    new:
+    apply:
         description:
-            - Control to demo if the result of this module is changed or not.
-            - Parameter description can be a list as well.
+            List of Notes or a Solution which shall be applied
+            in this order. No optimization is done to remove
+            unnecessary applies or reverts. 
+            Only one Solution is allowed and must start with C(@).
+            Notes can be prefixed by C(-) to revert it.
         required: false
+        default: []
+        type: list
+        elements: str
+    force_reapply:
+        description:
+            Defines if the tuning will be re-applied even if it 
+            is already in the requested state.
+        required: false
+        default: false
         type: bool
-# Specify this value according to your collection
-# in format of namespace.collection.doc_fragment_name
-# extends_documentation_fragment:
-#     - my_namespace.my_collection.my_doc_fragment_name
-
+    no_tuned:
+        description:
+            Defines if C(tuned.service) should be stopped and disabled.
+        required: false
+        default: true
+        type: bool
+    no_sapconf:
+        description:
+            Defines if C(sapconf.service) should be stopped and disabled.
+        required: false
+        default: true
+        type: bool
+    enabled:
+        description:
+            Defines if C(saptune.service) shall be started.
+            Remember, that C(sapconf) conflicts with C(saptune), so put 
+            it out of the way by yourself or set O(no_sapconf) to true.
+        required: false
+        default: true
+        type: bool
+    started:
+        description:
+            Defines if C(saptune.service) shall be enabled.
+            Remember, that C(sapconf) conflicts with `saptune`, so put 
+            it out of the way by yourself or set O(no_sapconf) to true.
+        required: false
+        default: true
+        type: bool                        
+    keep_applied_if_stopped:
+        description:
+            Defines if the tuning shall remain active even if
+            `saptune.service` was set to be stopped.
+        required: false
+        default: false
+        type: bool
+    ignore_non_compliant:
+        description:
+            Defines if a non-compliant tuning will be ignored.
+            If set to false, a non-compliant tuning will result
+            in an error. In case the tuning is already in the 
+            desired state (nothing in regards of tuning would be
+            done) a re-apply will be triggered.
+            If this is not wanted, set this parameter to true.
+        required: false
+        default: false
+        type: bool
+    ignore_degraded:
+        description:
+            A degraded systemd system state will result in an error. 
+            If this is not wanted, set this parameter to true.
+        required: false
+        default: true
+        type: bool
+    staging_enabled:
+        description:
+            Defines state of staging.
+        required: false
+        default: false
+        type: bool
+        
 author:
-    - Your Name (@yourGitHubHandle)
+    - Sören Schmidt (soeren.schmidt@suse.com)
 '''
 
 EXAMPLES = r'''
@@ -74,7 +137,6 @@ message:
 
 import collections
 import json
-import os
 import subprocess
 from typing import List, Dict, Tuple, Any
 from ansible.module_utils.basic import AnsibleModule
@@ -113,10 +175,16 @@ class OrderedSet():
     def __str__(self):
         return f'''{{{', '.join([repr(x) for x in self.ordered_set.keys()])}}}'''
 
-def execute(command: List[str]) -> None:
-    """Executes the given command.
+def execute(command: List[str], ignore_error: bool=False) -> None:
+    """Executes the given command and returns stdout.
+    If ignore_error is set, an exit code not 0 does not lead to a failure.
     Calls module.fail_json() in case of an error."""
 
+    # Set some result entries.
+    for entry, default in ('stdout', ''), ('stdout_lines', []), ('stderr', ''), ('stderr_lines', []):
+        if entry not in result:
+            result[entry] = default
+        
     try:
         with subprocess.Popen(command,
                               stdout = subprocess.PIPE, 
@@ -124,16 +192,20 @@ def execute(command: List[str]) -> None:
                              ) as proc:
             stdout = proc.stdout.readlines()
             stderr = proc.stderr.readlines()
-            result['stdout'] = '\n'.join([line.strip().decode('utf-8') for line in stdout])
-            result['stdout_lines'] = stdout
-            result['stderr'] = '\n'.join([line.strip().decode('utf-8') for line in stderr])
-            result['stderr_lines'] = stderr
+            stdout_str = '\n'.join([line.strip().decode('utf-8') for line in stdout])
+            stderr_str = '\n'.join([line.strip().decode('utf-8') for line in stderr])
+            if stdout:
+                result['stdout'] = result['stdout'] + stdout_str 
+                result['stdout_lines'].append(stdout)
+            if stderr:
+                result['stderr'] = result['stderr'] + stderr_str
+                result['stderr_lines'].append(stderr)
             result['rc'] = proc.returncode
-        if proc.returncode != 0:
+        if proc.returncode != 0 and not ignore_error:
             module.fail_json(msg=f'''Execution of \'{' '.join(command)}\' failed!''', **result)             
     except Exception as err:
         module.fail_json(msg=f'''Error executing \'{' '.join(command)}\': {err}''', **result)          
-    return
+    return stdout_str
 
 def get_notes_and_solutions() -> (List[str], List[str], Dict[str, List[str]]):
     """Calls 'saptune note list' and 'saptune solution list'
@@ -161,7 +233,7 @@ def get_status(compliance_check=True) -> Dict[str, Any]:
     command = ['saptune', '--format', 'json', 'status']
     if not compliance_check:
         command.append('--non-compliance-check')
-    output = execute(command)   #TODO: WE NEED TO TELL EXECUTE TO IGNORE THE EXIT CODE IN THIS CASE!!
+    output = execute(command, ignore_error=True)
     try: 
         json_output = json.loads(output)
     except json.decoder.JSONDecodeError:
@@ -207,6 +279,8 @@ def set_apply(existing_notes: List[str],
               apply_list: List[str],
               current_applied_notes: List[str],
               current_applied_solution: str,
+              current_compliance_status: bool,
+              ignore_non_compliant: bool,
               force_reapply: bool) -> List[List[str]]:
     """Takes the apply list and calculates the effective Notes
     (how "applied Notes" should look like) and the effective
@@ -214,11 +288,12 @@ def set_apply(existing_notes: List[str],
     the commands to achieve it.
     
     If the calculated Notes and Solution does not differ
-    from the current ones, an empty command list is returned
-    since nothing needs to be done.
+    from the current ones and the system is compliant and we shall
+    check for it, an empty command list is returned.
     
-    If there is a difference or `force_reapply` is set, the 
-    calculated commands are returned.
+    If there is a difference, a non-comliance we should consider
+    or `force_reapply` is set, the calculated commands are returned,
+    starting with a `saptune revert all`.
 
     In case of an error module.fail_json() gets called.
     
@@ -288,8 +363,17 @@ def set_apply(existing_notes: List[str],
     # commands need to be executed except force_reapply is set.
     if not force_reapply:
         if effective_solution == current_applied_solution and current_applied_notes == list(effective_notes):
-            return []   
-        
+            
+            # If we have no tuning (no Notes have been selected), 
+            # we return with an empty command list.
+            if not current_applied_notes:
+                return []
+            
+            # If the tuned system is compliant and we shall not ignore that,
+            # we return with an empty command list.
+            if not ignore_non_compliant and current_compliance_status:
+                return []  
+    
     return commands
 
 def run_module():
@@ -315,7 +399,6 @@ def run_module():
     # Start to build up the result object.
     result = dict(
         changed = False,
-        rc = None,
         commands = []
     )
 
@@ -329,7 +412,7 @@ def run_module():
     command_list = []
 
     # Call status to collect the current settings.
-    status = get_status(compliance_check=False)
+    status = get_status(compliance_check=True)
 
     # Set staging.
     command_list.extend(set_staging(module.params['staging_enabled'], 
@@ -375,7 +458,9 @@ def run_module():
                                   module.params['apply'],
                                   status['Notes applied'],
                                   applied_solution,
-                                  force_reapply=module.params['force_reapply']))
+                                  status['tuning state'] if 'tuning state' in status else False,
+                                  module.params['ignore_non_compliant'],
+                                  module.params['force_reapply']))
     result['commands'] = [' '.join(command) for command in command_list]
     
     # Handle saptune.service start/stop if not done earlier.
@@ -394,41 +479,28 @@ def run_module():
     # If we have something to execute, we do.
     if command_list:
         for command in command_list:
-            execute(command)    # TODO: OUTPUT HANDLING
+            execute(command) 
         result['changed'] = True
+        
+        # Update the status since we changed something.
+        status = get_status(compliance_check=True)
+        
+        result['msg'] = 'System has been tuned.'
     else:
         result['msg'] = 'Nothing to do.'
-        module.exit_json(**result)
-        
+    
+    # Check if we are compliant and shall act on it.
+    if not module.params['ignore_non_compliant']:
+        if 'tuning state' in status and status['tuning state'] == 'not compliant':
+            module.fail_json(msg='Tuning is non-compliant!', **result)
+    
+    # A degraded systemd system state is considered an error.
+    if not module.params['ignore_degraded']:
+        if status['systemd system state'] == 'degraded':
+            module.fail_json(msg='Systemd system state is degraded!', **result)
 
-
-
-    # Calling status again and do final checks.
-    if not module.params['ignore_non_compliant'] or not module.params['ignore_degraded']:
-
-        # Get status again, if commands had been executed.
-        if command_list:
-            status = get_status(compliance_check=True)
-                
-        # A non compliant tuning is considered an error.
-        if not module.params['ignore_non_compliant']:
-            if status['tuning state'] == 'not compliant':
-                module.fail_json(msg='Tuning is non-compliant!', **result)
-        
-        # A degraded systemd system state is considered an error.
-        if not module.params['ignore_degraded']:
-            if status['systemd system state'] == 'degraded':
-                module.fail_json(msg='Systemd system state is degraded!', **result)
-
-
-
-
-
-
-        
-
-    # in the event of a successful module execution, you will want to
-    # simple AnsibleModule.exit_json(), passing the key/value results
+    # All went well...
+    result['rc'] = 0
     module.exit_json(**result)
 
 

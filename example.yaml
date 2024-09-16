@@ -1,0 +1,11 @@
+---
+
+- name: Play with saptune
+  gather_facts: false
+  hosts: localhost
+
+  tasks:
+
+  - name: Example with saptune 
+    saptune:
+    

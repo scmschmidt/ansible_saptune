@@ -15,7 +15,7 @@ apply:
 
 # Normally the module will do nothing if the tuning is
 # already in the configured state. With `force_reapply`
-# this behaviour can be altered.
+# this behavior can be altered.
 # default: false
 force_reapply: false
 
@@ -40,8 +40,12 @@ started: true
 # default: false
 keep_applied_if_stopped: false
 
-# A non-compliant tuning will result in an error.
+# Defines if a non-compliant tuning will be ignored.
+# If set to false, a non-compliant tuning will result
+# in an error. If the apply list is already configured
+# on the system a re-apply will be triggered.
 # If this is not wanted, set this parameter to true.
+# In case the the apply list is already 
 # default: false
 ignore_non_compliant: false
 
