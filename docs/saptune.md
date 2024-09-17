@@ -5,6 +5,11 @@
 The module will configure <code>saptune</code>\. It handles applying Notes and Solution\, configuring <code>saptune\.service</code>\, disableing <code>tuned\.service</code> and <code>sapconf\.service</code> and enabling/disabling of staging\.
 
 
+## Requirements
+
+The below requirements are needed on the host that executes this module.
+
+- <code>saptune</code> must support JSON output \(\>\= 3\.1\)
 
 ## Parameters
 

@@ -101,6 +101,9 @@ options:
         default: false
         type: bool
         
+requirements:
+    - C(saptune) must support JSON output (>= 3.1)
+     
 author:
     - Sören Schmidt (soeren.schmidt@suse.com)
 '''
@@ -312,11 +315,11 @@ def set_apply(existing_notes: List[str],
               current_applied_solution: str,
               current_compliance_status: bool,
               ignore_non_compliant: bool,
-              force_reapply: bool) -> List[List[str]]:
+              force_reapply: bool) -> Tuple[List[str], str, List[List[str]]]:
     """Takes the apply list and calculates the effective Notes
     (how "applied Notes" should look like) and the effective
     Solution (what "applied Solution" should list) as well as
-    the commands to achieve it.
+    the commands to achieve it. All three are returned.
     
     If the calculated Notes and Solution does not differ
     from the current ones and the system is compliant and we shall
@@ -382,14 +385,15 @@ def set_apply(existing_notes: List[str],
                 if entry in effective_notes:
                     effective_notes.discard(entry)
                     commands.append(['saptune', 'note', 'revert', entry])
-                
+               
         # If the Notes of a Solution all have been removed,
         # the Solution is removed.
-        if effective_solution:
-            if effective_notes.intersection(effective_solution_notes):
+        if effective_solution:  
+            if effective_notes.intersection(effective_solution_notes):  #BUG: THIS ALWAYS RESETS SOLUTION
                 effective_solution = None
                 effective_solution_notes = None
-                
+    result['a'] = effective_solution             
+    result['b'] = list(effective_notes)
     # If our calculated configuration is already applied, then no
     # commands need to be executed except force_reapply is set.
     if not force_reapply:
@@ -398,14 +402,14 @@ def set_apply(existing_notes: List[str],
             # If we have no tuning (no Notes have been selected), 
             # we return with an empty command list.
             if not current_applied_notes:
-                return []
+                return list(effective_notes), effective_solution, []
             
             # If the tuned system is compliant and we shall not ignore that,
             # we return with an empty command list.
             if not ignore_non_compliant and current_compliance_status:
-                return []  
-    
-    return commands
+                return list(effective_notes), effective_solution, []  
+
+    return list(effective_notes), effective_solution, commands
 
 def run_module():
     
@@ -433,6 +437,7 @@ def run_module():
         commands = [],
         saptune_status = {}
     )
+    message = None  # cannot set result['msg'] directly or we get errors.
 
     # Instantiate the Ansible module.
     module = AnsibleModule(
@@ -491,16 +496,19 @@ def run_module():
     #   - [' __keep_current_tuning__ '] -> `apply` is missing, so tuning shall be left alone
     if ' __keep_current_tuning__ ' not in module.params['apply']:
         existing_notes, existing_solutions, solution_map = get_notes_and_solutions()
-        applied_solution = status['Solution applied'][0] if status['Solution applied'] else None
-        command_list.extend(set_apply(existing_notes,
-                                    existing_solutions,
-                                    solution_map,
-                                    module.params['apply'],
-                                    status['Notes applied'],
-                                    applied_solution,
-                                    status['tuning state'] if 'tuning state' in status else False,
-                                    module.params['ignore_non_compliant'],
-                                    module.params['force_reapply']))
+        applied_solution = status['Solution applied'][0]['Solution ID'] if status['Solution applied'] else None
+        effective_notes, effective_solution, commands = set_apply(existing_notes,
+                                                                  existing_solutions,
+                                                                  solution_map,
+                                                                  module.params['apply'],
+                                                                  status['Notes applied'],
+                                                                  applied_solution,
+                                                                  status['tuning state'] if 'tuning state' in status else False,
+                                                                  module.params['ignore_non_compliant'],
+                                                                  module.params['force_reapply'])
+        command_list.extend(commands)
+    else:
+        effective_notes, effective_solution = None, None
     
     # Handle saptune.service start/stop if not done earlier.
     if not saptune_stop_handled:
@@ -527,22 +535,31 @@ def run_module():
         # Update the status since we changed something.
         status = get_status(compliance_check=True)
         
-        result['msg'] = 'System has been tuned.'
+        message = 'System has been tuned.'
     else:
-        result['msg'] = 'Nothing to do.'
+        message = 'Nothing to do.'
+    
+    # Check if applied list matches the config (if we had to tune).
+    if ' __keep_current_tuning__ ' not in module.params['apply']:
+        applied_solution = status['Solution applied'][0]['Solution ID'] if status['Solution applied'] else None
+        if effective_solution != applied_solution:
+            module.fail_json(msg=f'Applied Solution ({applied_solution}\ differs from the expected one ({effective_solution})!', **result)
+        if effective_notes != status['Notes applied']:
+            module.fail_json(msg=f'''Applied Notes ({', '.join(status['Notes applied'])}) differ from the expected ones ({', '.join(effective_notes)})!''', **result)
     
     # Check if we are compliant and shall act on it.
     if not module.params['ignore_non_compliant']:
         if 'tuning state' in status and status['tuning state'] == 'not compliant':
             module.fail_json(msg='Tuning is non-compliant!', **result)
     
-    # A degraded systemd system state is considered an error.
+    # Check if we have a degraded systemd system state and shall act on it.
     if not module.params['ignore_degraded']:
         if status['systemd system state'] == 'degraded':
             module.fail_json(msg='Systemd system state is degraded!', **result)
 
     # All went well...
     result['rc'] = 0
+    result['msg'] = message
     module.exit_json(**result)
 
 

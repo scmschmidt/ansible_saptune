@@ -7,7 +7,7 @@
   tasks:
 
   - name: Example with saptune 
-    check_mode: true
+    #check_mode: true
     saptune:
-      #apply:
+      apply: "@HANA"
     
