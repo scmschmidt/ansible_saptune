@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: (c) 2024, Sören Schmidt <soeren.schmidt@suse.com>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -28,6 +28,8 @@ options:
             unnecessary applies or reverts. 
             Only one Solution is allowed and must start with C(@).
             Notes can be prefixed by C(-) to revert it.
+            If O(apply) is missing, the tuning will be left alone.
+            An empty O(apply) means, that no tuning shall be applied.
         required: false
         default: []
         type: list
@@ -104,35 +106,68 @@ author:
 '''
 
 EXAMPLES = r'''
-# Pass in a message
-- name: Test with a message
-  my_namespace.my_collection.my_test:
-    name: hello world
+# Tune for SAP HANA
+- name: Tune for SAP HANA
+  saptune:
+    apply:
+      - '@HANA'
 
-# pass in a message and have changed true
-- name: Test with a message and changed output
-  my_namespace.my_collection.my_test:
-    name: hello world
-    new: true
+# Just make sure, the service is running and enabled
+- name: saptune.service shall be active and enabled
+  saptune:
+    enabled: true
+    started: true
 
-# fail the module
-- name: Test failure of the module
-  my_namespace.my_collection.my_test:
-    name: fail me
+# Make sure staging is enabled
+- name: Set HANA solution
+  saptune:
+    staging_enabled: true
 '''
 
 RETURN = r'''
 # These are examples of possible return values, and in general should use other names for return values.
-original_message:
-    description: The original name param that was passed in.
-    type: str
+commands:
+    description: List of commands, which are executed to get to the desired state.
+    type: list
+    elements: str
+    returned: success
+    sample: '["saptune revert all"]'
+saptune_status:
+    description: The result object of the last C(saptune --format json status) executed by the module.
+    type: dict
     returned: always
-    sample: 'hello world'
-message:
-    description: The output message that the test module generates.
-    type: str
-    returned: always
-    sample: 'goodbye'
+    sample: '{
+        "services": {
+        "saptune": [
+            "enabled",
+            "active"
+        ],
+        "sapconf": [],
+        "tuned": []
+        },
+        "systemd system state": "running",
+        "tuning state": "compliant",
+        "virtualization": "oracle",
+        "configured version": "3",
+        "package version": "3.1.3",
+        "Solution enabled": [],
+        "Notes enabled by Solution": [],
+        "Solution applied": [],
+        "Notes applied by Solution": [],
+        "Notes enabled additionally": [
+        "SAP_BOBJ"
+        ],
+        "Notes enabled": [
+        "SAP_BOBJ"
+        ],
+        "Notes applied": [
+        "SAP_BOBJ"
+        ],
+        "staging": {
+        "staging enabled": false,
+        "Notes staged": [],
+        "Solutions staged": []
+        }'
 '''
 
 import collections
@@ -214,13 +249,8 @@ def get_notes_and_solutions() -> (List[str], List[str], Dict[str, List[str]]):
     Calls module.fail_json() in case of an error."""
 
     result = json.loads(execute(['saptune', '--format', 'json', 'note', 'list']))
-    if result['exit code'] != 0:
-        module.fail_json(msg='Could not retrieve Note list!', **result)
     existing_notes = [e['Note ID'] for e in result['result']['Notes available']]
-
     result = json.loads(execute(['saptune', '--format', 'json', 'solution', 'list']))
-    if result['exit code'] != 0:
-        module.fail_json(msg='Could not retrieve Solution list!', **result)
     existing_solutions = [e['Solution ID'] for e in result['result']['Solutions available']]
     solution_map = {e['Solution ID']: e['Note list'] for e in result['result']['Solutions available']}
 
@@ -241,7 +271,8 @@ def get_status(compliance_check=True) -> Dict[str, Any]:
     if not json_output['result']:
         module.fail_json(msg='\'saptune --format json status\' returned an empty result!', **result)
     
-    return json_output['result']
+    result['saptune_status'] = json_output['result']    
+    return result['saptune_status']
  
 def set_staging(is_value: bool, should_value: bool) -> List[List[str]]:
     """Returns the commands to set the staging to the desired state."""
@@ -384,7 +415,7 @@ def run_module():
     
     # Define module arguments/parameters.
     module_args = dict(
-        apply=dict(type='list', elements='str', required=False, default=[]),
+        apply=dict(type='list', elements='str', required=False, default=[' __keep_current_tuning__ ']),
         force_reapply=dict(type='bool', required=False, default=False),
         no_tuned=dict(type='bool', required=False, default=True),
         no_sapconf=dict(type='bool', required=False, default=True),
@@ -399,7 +430,8 @@ def run_module():
     # Start to build up the result object.
     result = dict(
         changed = False,
-        commands = []
+        commands = [],
+        saptune_status = {}
     )
 
     # Instantiate the Ansible module.
@@ -450,18 +482,25 @@ def run_module():
             saptune_stop_handled = True
         
     # Generate the commands depending on the apply list.
-    existing_notes, existing_solutions, solution_map = get_notes_and_solutions()
-    applied_solution = status['Solution applied'][0] if status['Solution applied'] else None
-    command_list.extend(set_apply(existing_notes,
-                                  existing_solutions,
-                                  solution_map,
-                                  module.params['apply'],
-                                  status['Notes applied'],
-                                  applied_solution,
-                                  status['tuning state'] if 'tuning state' in status else False,
-                                  module.params['ignore_non_compliant'],
-                                  module.params['force_reapply']))
-    result['commands'] = [' '.join(command) for command in command_list]
+    if module.params['apply'] == None:  # we need `apply` always to be a list
+        module.params['apply'] = []
+
+    # module.params['apply'] can be
+    #   - [] -> `apply` is empty, so no tuning shall be applied
+    #   - [...] -> `apply` is given and describes the expected tuning
+    #   - [' __keep_current_tuning__ '] -> `apply` is missing, so tuning shall be left alone
+    if ' __keep_current_tuning__ ' not in module.params['apply']:
+        existing_notes, existing_solutions, solution_map = get_notes_and_solutions()
+        applied_solution = status['Solution applied'][0] if status['Solution applied'] else None
+        command_list.extend(set_apply(existing_notes,
+                                    existing_solutions,
+                                    solution_map,
+                                    module.params['apply'],
+                                    status['Notes applied'],
+                                    applied_solution,
+                                    status['tuning state'] if 'tuning state' in status else False,
+                                    module.params['ignore_non_compliant'],
+                                    module.params['force_reapply']))
     
     # Handle saptune.service start/stop if not done earlier.
     if not saptune_stop_handled:
@@ -469,6 +508,9 @@ def run_module():
         command_list.extend(set_service('saptune.service', 
                                         status['services']['saptune'][1], 
                                         should_value))
+        
+    # All actions have been planned.
+    result['commands'] = [' '.join(command) for command in command_list]        
         
     # With check_mode we just return the commands.
     #module.check_mode = True

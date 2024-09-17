@@ -1,6 +1,6 @@
 {
   "ANSIBLE_MODULE_ARGS": {
-    "apply": [],
+    "apply": ["@HANA"],
     "force_reapply": "no",
     "no_tuned": true,
     "no_sapconf": true, 
