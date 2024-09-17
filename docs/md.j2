@@ -1,0 +1,120 @@
+{% if short_description %}
+{%   set title = module + ' - ' + short_description | md_ify %}
+{% else %}
+{%   set title = module %}
+{% endif %}
+# {{ title }}
+
+{% if description -%}
+## Synopsis
+
+{%   for desc in description %}
+{{ desc | md_ify }}
+
+{%   endfor %}
+{% endif %}
+
+{% if requirements -%}
+## Requirements
+
+The below requirements are needed on the host that executes this module.
+
+{%   for req in requirements %}
+- {{ req | md_ify }}
+{%   endfor %}
+{% endif %}
+
+{% if options -%}
+## Parameters
+
+| Parameter     | Defaults/Choices  | Comments |
+| ------------- | ----------------- |--------- |
+{% for option, values in options.items() %}
+| `{{ option }}`<br />{{ values['type']}} / {% if values.get('required') == True %}required{% else %}optional{% endif %} | {% if values.get('default') != None %} {{ values['default'] | replace('None','')}} {% endif %} {% if values.get('choices') != None %}Choices:<br /> <ul>{% for each in values['choices'] %} <li>{{ each }}</li> {% endfor %}</ul>{% endif %}  | {% if values.get('description') != None %}{% for each in values['description'] %} {{ each }} {% endfor %}{% endif %} |
+{% endfor %}
+{% endif %}
+
+{% if notes -%}
+## Notes
+
+{%   for note in notes %}
+   - {{ note | md_ify }}
+{%   endfor %}
+
+{% endif %}
+{% if seealso -%}
+## See Also
+
+{% for item in seealso %}
+{%   if item.module is defined and item.description is defined %}
+   :ref:`{{ item.module }}_module`
+       {{ item.description | md_ify }}
+{%   elif item.module is defined %}
+   :ref:`{{ item.module }}_module`
+      The official documentation on the **{{ item.module }}** module.
+{%   elif item.name is defined and item.link is defined and item.description is defined %}
+   `{{ item.name }} <{{ item.link }}>`_
+       {{ item.description | md_ify }}
+{%   elif item.ref is defined and item.description is defined %}
+   :ref:`{{ item.ref }}`
+       {{ item.description | md_ify }}
+{%   endif %}
+{% endfor %}
+
+{% endif %}
+{% if examples -%}
+## Examples
+
+```yaml
+{{ examples | indent(4, True) }}
+```
+{% endif %}
+
+{% if returndocs -%}
+## Return Values
+
+ 	 	
+| Key     | Returned  | Description |
+| ------- | --------- |------------ |
+{% for key, values in returndocs.items() %}
+| `{{ key }}`<br />{{ values['type']}} | {{ values['returned'] }} | {% for each in values['description'] %} {{ each }} {% endfor %}<br /><br />Sample: `{{ values['sample'] }}` |
+{% endfor %}
+
+{% endif %}
+
+{% if status -%}
+## Status
+{% if deprecated %}
+
+- This {{ plugin_type }} will be removed in version
+  {{ deprecated['removed_in'] | default('') | string | md_ify }}.
+  *[deprecated]*
+
+{% else %}
+
+{% set module_states = {
+     "preview": "not guaranteed to have a backwards compatible interface",
+     "stableinterface": "guaranteed to have backward compatible interface changes going forward",
+   }
+%}
+{%   if metadata %}
+{%     if metadata.status %}
+{%       for cur_state in metadata.status %}
+- This {{ plugin_type }} is {{ module_states[cur_state] }}. *[{{ cur_state }}]*
+{%       endfor %}
+{%     endif %}
+
+{%     if metadata.supported_by %}
+- This {{ plugin_type }} is maintained by {{ metadata.supported_by }}.
+{%     endif %}
+{%   endif %}
+{% endif %}
+{% endif %}
+
+{% if author is defined -%}
+## Authors
+
+{%   for author_name in author %}
+- {{ author_name }}
+{%   endfor %}
+{% endif %}

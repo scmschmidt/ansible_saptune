@@ -513,9 +513,9 @@ def run_module():
     result['commands'] = [' '.join(command) for command in command_list]        
         
     # With check_mode we just return the commands.
-    #module.check_mode = True
     if module.check_mode:
         result['msg'] = 'Do nothing because check_mode is set.'
+        result['rc'] = 0
         module.exit_json(**result)
         
     # If we have something to execute, we do.
