@@ -1,6 +1,6 @@
 # ansible_saptune
 
-** Cureently in alpha state! It seems to workm but has not yet tested fully.**
+**Currently in alpha state! It seems to work but has not yet tested fully.**
 
 Contains two modules:
 
