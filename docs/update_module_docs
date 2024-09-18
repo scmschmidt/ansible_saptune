@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Updates the markup documentation files in docs/ with
+# modules from library/.
+#
+# Call it from main repo directory.
+#
+# Install `ansible-doc-extractor` via `pip` first!
+# (https://github.com/xlab-steampunk/ansible-doc-extractor/tree/master)
+
+
+for module in library/*.py ; do 
+    ansible-doc-extractor docs/ "${module}" --markdown --template docs/md.j2
+done
+exit 0

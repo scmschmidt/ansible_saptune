@@ -13,12 +13,15 @@ module: saptune
 
 short_description: Configures saptune
 
-version_added: "1.0.0"
+version_added: "0.0.1"
 
 description: 
         The module will configure C(saptune). It handles applying Notes and Solution,
-        configuring C(saptune.service), disableing C(tuned.service) and C(sapconf.service)
+        configuring C(saptune.service), disabling C(tuned.service) and C(sapconf.service)
         and enabling/disabling of staging.
+        B(Keep in mind, that the system might not tuned correctly or tuned at all during
+        it makes changes and that a failure can leave the system in a badly tuned state.
+        Do not change the tuning on a system with SAP software currently running!)
 
 options:
     apply:
@@ -128,7 +131,6 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-# These are examples of possible return values, and in general should use other names for return values.
 commands:
     description: List of commands, which are executed to get to the desired state.
     type: list
@@ -386,14 +388,15 @@ def set_apply(existing_notes: List[str],
                     effective_notes.discard(entry)
                     commands.append(['saptune', 'note', 'revert', entry])
                
-        # If the Notes of a Solution all have been removed,
-        # the Solution is removed.
+        # If the Notes of a Solution all have been removed, the Solution is removed.
         if effective_solution:  
-            if effective_notes.intersection(effective_solution_notes):  #BUG: THIS ALWAYS RESETS SOLUTION
+            if not effective_notes.intersection(effective_solution_notes):
                 effective_solution = None
                 effective_solution_notes = None
-    result['a'] = effective_solution             
-    result['b'] = list(effective_notes)
+                
+            else:
+                result['c'] = f'Notes of {effective_solution} not fully reverted'
+    
     # If our calculated configuration is already applied, then no
     # commands need to be executed except force_reapply is set.
     if not force_reapply:
@@ -543,7 +546,7 @@ def run_module():
     if ' __keep_current_tuning__ ' not in module.params['apply']:
         applied_solution = status['Solution applied'][0]['Solution ID'] if status['Solution applied'] else None
         if effective_solution != applied_solution:
-            module.fail_json(msg=f'Applied Solution ({applied_solution}\ differs from the expected one ({effective_solution})!', **result)
+            module.fail_json(msg=f'Applied Solution ({applied_solution} differs from the expected one ({effective_solution})!', **result)
         if effective_notes != status['Notes applied']:
             module.fail_json(msg=f'''Applied Notes ({', '.join(status['Notes applied'])}) differ from the expected ones ({', '.join(effective_notes)})!''', **result)
     

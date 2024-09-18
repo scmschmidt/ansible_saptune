@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-The module will configure <code>saptune</code>\. It handles applying Notes and Solution\, configuring <code>saptune\.service</code>\, disableing <code>tuned\.service</code> and <code>sapconf\.service</code> and enabling/disabling of staging\.
+The module will configure <code>saptune</code>\. It handles applying Notes and Solution\, configuring <code>saptune\.service</code>\, disabling <code>tuned\.service</code> and <code>sapconf\.service</code> and enabling/disabling of staging\. <b>Keep in mind\, that the system might not tuned correctly or tuned at all during it makes changes and that a failure can leave the system in a badly tuned state\. Do not change the tuning on a system with SAP software currently running\!</b>
 
 
 ## Requirements

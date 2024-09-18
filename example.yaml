@@ -1,13 +1,20 @@
 ---
 
 - name: Play with saptune
-  gather_facts: false
+  gather_facts: true
   hosts: localhost
 
   tasks:
 
-  - name: Example with saptune 
-    #check_mode: true
-    saptune:
-      apply: "@HANA"
+  # - name: Example with saptune 
+  #   #check_mode: true
+  #   saptune:
+  #     apply: "@HANA"
     
+
+  - name: Gather saptune facts
+    saptune_facts:
+
+  - name: Print saptune facts
+    debug:
+      msg: "{{ ansible_facts.saptune }}"
